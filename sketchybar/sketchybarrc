@@ -1,0 +1,21 @@
+#!/usr/bin/env lua
+package.cpath = package.cpath .. ";/Users/" .. os.getenv("USER") .. "/.local/share/sketchybar_lua/?.so"
+
+local sbar = require("sketchybar")
+
+local theme = require("theme")
+theme.load("tokyodark")
+
+sbar.exec("borders"
+  .. " active_color=" .. theme.border_active
+  .. " inactive_color=" .. theme.border_inactive
+  .. " width=3.0"
+  .. " hidpi=on"
+  .. " style=rounded")
+
+sbar.begin_config()
+require("init")
+sbar.hotload(true)
+sbar.end_config()
+
+sbar.event_loop()

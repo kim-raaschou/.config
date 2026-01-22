@@ -1,0 +1,11 @@
+# Ignore everything by default
+/*
+# Whitelist what we want to track
+!.gitignore
+!aerospace/
+!sketchybar/
+# Ignore junk within whitelisted directories
+.DS_Store
+*.log
+*.err
+sketchybar/.vscode/
