@@ -1,5 +1,5 @@
 local sbar = require("sketchybar")
-local logger = require("logger")
+local logger = require("util.logger")
 
 local function exec(command, callback)
   local start_time = os.clock()

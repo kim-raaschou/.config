@@ -1,4 +1,4 @@
-local ENABLED = false
+local ENABLED = true
 
 local function encode(obj, indent)
   indent = indent or 0

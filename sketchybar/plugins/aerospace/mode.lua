@@ -1,4 +1,4 @@
-local logger = require("logger")
+local logger = require("util.logger")
 local sbar   = require("sketchybar")
 local theme  = require("theme")
 

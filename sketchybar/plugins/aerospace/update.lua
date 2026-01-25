@@ -1,5 +1,5 @@
 local sbar = require("sketchybar")
-local logger = require("logger")
+local logger = require("util.logger")
 local theme = require("theme")
 
 local MAX_APPS_PER_WORKSPACE = 10
@@ -31,6 +31,7 @@ return function(workspace_data, focused_window_id)
         sbar.set("space." .. ws.id .. ".app." .. appIndex, {
           drawing = true,
           display = ws.display,
+          click_script = "aerospace focus --window-id " .. window.id,
           label = { string = app.count > 1 and "􀕩" or "" },
           icon = {
             background = {
@@ -42,10 +43,6 @@ return function(workspace_data, focused_window_id)
             },
           }
         })
-
-        sbar.subscribe("space." .. ws.id .. ".app." .. appIndex, "mouse.clicked", function()
-          sbar.exec("aerospace focus --window-id " .. window.id)
-        end)
       end
     end
 

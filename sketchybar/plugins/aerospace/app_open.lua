@@ -1,5 +1,5 @@
 local sbar = require("sketchybar")
-local logger = require("logger")
+local logger = require("util.logger")
 local raycast_selector = require("plugins.aerospace.raycast_selector")
 local cli = require("plugins.aerospace.cli")
 
