@@ -1,171 +1,201 @@
-    start-at-login = true
+# ============================================================================
+# GLOBAL SETTINGS
+# ============================================================================
 
-#after-startup-command = ['exec-and-forget sketchybar']
+start-at-login = true
 
-# Notify Sketchybar about workspace change
-exec-on-workspace-change = ['/bin/bash', '-c',
-    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE'
-]
-
-on-mode-changed=['exec-and-forget sketchybar --trigger aerospace_mode_change MODE="$(aerospace list-modes --current)"']
-
-# Notify Sketchybar about focus change (for tracking focused app)
-on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_focus_change FOCUSED_WINDOW_ID=$AEROSPACE_WINDOW_ID FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE']
-
-# Sketchybar integration will be configured here
-
+automatically-unhide-macos-hidden-apps = true
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
-automatically-unhide-macos-hidden-apps = true
 
 accordion-padding = 0
 
 default-root-container-layout = 'tiles'
 default-root-container-orientation = 'auto'
 
-# Mode change event - notify Sketchybar when binding mode changes
-#[key-mapping]
-#preset = 'qwerty'
 
-# Gaps between windows (inner-*) and between monitor edges (outer-*).
-# Possible values:
-# - Constant:     gaps.outer.top = 8
-# - Per monitor:  gaps.outer.top = [{ monitor.main = 16 }, { monitor."some-pattern" = 32 }, 24]
-#                 In this example, 24 is a default value when there is no match.
-#                 Monitor pattern is the same as for 'workspace-to-monitor-force-assignment'.
-#                 See: https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
+# ============================================================================
+# SKETCHYBAR INTEGRATION
+# ============================================================================
+
+# Notify Sketchybar about workspace changes
+exec-on-workspace-change = ['/bin/bash', '-c',
+    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE'
+]
+
+# Notify Sketchybar about mode changes
+on-mode-changed = ['exec-and-forget sketchybar --trigger aerospace_mode_change MODE="$(aerospace list-modes --current)"']
+
+# Notify Sketchybar about focus changes
+on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_focus_change FOCUSED_WINDOW_ID=$AEROSPACE_WINDOW_ID FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE']
+
+
+# ============================================================================
+# GAPS CONFIGURATION
+# ============================================================================
+
 [gaps]
-inner.horizontal = [{ monitor.'BenQ RD280U' = 16 }, { monitor.main = 16 }, { monitor.'ASUS MB16AH' = 10 }, 10]
-inner.vertical   = [{ monitor.'BenQ RD280U' = 16 }, { monitor.main = 16 }, { monitor.'ASUS MB16AH' = 8 },  10]
-outer.left       = [{ monitor.'BenQ RD280U' = 16}, { monitor.main = 16 }, 10]   
-outer.right      = [{ monitor.'BenQ RD280U' = 16 }, { monitor.main = 16 }, 10] 
-outer.bottom     = [{ monitor.'BenQ RD280U' = 8 },  { monitor.main = 16 }, 8]  
-outer.top        = [{ monitor.'BenQ RD280U' = 42 }, { monitor.'C34J79x' = 8}, {  monitor.'Built-in Retina Display' = 10 }, 42]  
+inner.horizontal = 7
+inner.vertical   = 7
+outer.left       = 2
+outer.right      = 2
+outer.bottom     = 2
+outer.top        = 7
 
-# All possible keys:
-# - Letters.        a, b, c, ..., z
-# - Numbers.        0, 1, 3, ..., 9
-# - Keypad numbers. keypad0, keypad1, keypad2, ..., keypad9
-# - F-keys.         f1, f2, ..., f20
-# - Special keys.   minus, equal, period, comma, slash, backslash, quote, semicolon, backtick,
-#                   leftSquareBracket, rightSquareBracket, space, enter, esc, backspace, tab
-# - Keypad special. keypadClear, keypadDecimalMark, keypadDivide, keypadEnter, keypadEqual,
-#                   keypadMinus, keypadMultiply, keypadPlus
-# - Arrows.         left, down, up, right
-# All possible modifiers: cmd, alt, ctrl, shift
-# All possible commands: https://nikitabobko.github.io/AeroSpace/commands
-# See: https://nikitabobko.github.io/AeroSpace/commands#move
+
+# ============================================================================
+# WORKSPACE TO MONITOR ASSIGNMENT
+# ============================================================================
+
+[workspace-to-monitor-force-assignment]
+4 = ['secondary', 'main']
+5 = ['secondary', 'main']
+
+
+# ============================================================================
+# MAIN MODE BINDINGS
+# ============================================================================
+
 [mode.main.binding]
 
-#cmd-h = [] # Disable "hide application"
-cmd-alt-h = [] # Disable "hide others"
-cmd-tab = []
+# Disable default macOS shortcuts
+cmd-alt-h = []  # Disable "hide others"
+cmd-tab = []    # Disable default cmd-tab
 
-#shift-ctrlr-alt-q = 'close'
+# Mode switching
 cmd-ctrl-alt-w = ['mode window']
 cmd-ctrl-alt-a = ['mode apps']
 
-#ctrl-left = ['focus left', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
-#ctrl-right = ['focus right', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
-#ctrl-up = ['focus up', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
-#ctrl-down = ['focus down', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
-
-#cmd-ctrl-alt-period = ['exec-and-forget pgrep -x "sketchybar" > /dev/null && pkill -x "sketchybar" || nohup sketchybar >/dev/null 2>&1 &']
-#cmd-ctrl-alt-enter = ['flatten-workspace-tree', 'layout h_tiles h_accordion']
-
+# Layout toggle
 cmd-ctrl-alt-enter = ['layout tiles accordion']
 
-cmd-ctrl-alt-left = ['focus left --boundaries-action wrap-around-the-workspace']
+# Focus navigation (wrap around workspace boundaries)
+cmd-ctrl-alt-left  = ['focus left --boundaries-action wrap-around-the-workspace']
 cmd-ctrl-alt-right = ['focus right --boundaries-action wrap-around-the-workspace']
-cmd-ctrl-alt-up = ['focus up --boundaries-action wrap-around-the-workspace']
-cmd-ctrl-alt-down = ['focus down --boundaries-action wrap-around-the-workspace']
+cmd-ctrl-alt-up    = ['focus up --boundaries-action wrap-around-the-workspace']
+cmd-ctrl-alt-down  = ['focus down --boundaries-action wrap-around-the-workspace']
 
-# Workspace switching with Hyper + Shift + Left/Right arrows
-cmd-ctrl-alt-shift-left = 'workspace --wrap-around prev'
+# Workspace navigation
+cmd-ctrl-alt-shift-left  = 'workspace --wrap-around prev'
 cmd-ctrl-alt-shift-right = 'workspace --wrap-around next'
 
+# Workspace switching
 cmd-ctrl-alt-1 = ['workspace 1']
 cmd-ctrl-alt-2 = ['workspace 2']
 cmd-ctrl-alt-3 = ['workspace 3']
 cmd-ctrl-alt-4 = ['workspace 4']
 cmd-ctrl-alt-5 = ['workspace 5']
 
+# Move window to workspace
 cmd-ctrl-alt-shift-1 = ['move-node-to-workspace 1 --focus-follows-window']
 cmd-ctrl-alt-shift-2 = ['move-node-to-workspace 2 --focus-follows-window']
 cmd-ctrl-alt-shift-3 = ['move-node-to-workspace 3 --focus-follows-window']
 cmd-ctrl-alt-shift-4 = ['move-node-to-workspace 4 --focus-follows-window']
 cmd-ctrl-alt-shift-5 = ['move-node-to-workspace 5 --focus-follows-window']
 
-[workspace-to-monitor-force-assignment] 
-    4 = ['secondary', 'main']
-    5 = ['secondary', 'main']
+
+# ============================================================================
+# WINDOW MODE BINDINGS
+# ============================================================================
 
 [mode.window.binding]
-left = 'move left'
+
+# Move windows
+left  = 'move left'
 right = 'move right'
-up = 'move up'
-down = 'move down'
-q = [
-    'exec-and-forget brew services restart felixkratz/formulae/borders', 
-    'exec-and-forget brew services restart felixkratz/formulae/sketchybar', 
-    'reload-config',
-    'mode main']
+up    = 'move up'
+down  = 'move down'
 
-shift-ctrl-alt-left = ['join-with left']
+# Join windows
+shift-ctrl-alt-left  = ['join-with left']
 shift-ctrl-alt-right = ['join-with right']
-shift-ctrl-alt-up = ['join-with up']
-shift-ctrl-alt-down = ['join-with down']
+shift-ctrl-alt-up    = ['join-with up']
+shift-ctrl-alt-down  = ['join-with down']
 
+# Resize windows
+shift-left  = ['resize width -75']
+shift-right = ['resize width +75']
+shift-up    = ['resize height +75']
+shift-down  = ['resize height -75']
+
+# Utilities
 b = ['balance-sizes', 'mode main']
+q = [
+    'exec-and-forget brew services restart felixkratz/formulae/borders',
+    'exec-and-forget brew services restart felixkratz/formulae/sketchybar',
+    'reload-config',
+    'mode main'
+]
 backspace = ['reload-config', 'mode main']
 
-shift-left = ['resize width -75']
-shift-right = ['resize width +75']
-shift-up = ['resize height +75']
-shift-down = ['resize height -75']
-
+# Exit window mode
 enter = ['mode main']
-esc = ['mode main']
+esc   = ['mode main']
+
+
+# ============================================================================
+# APPS MODE BINDINGS
+# ============================================================================
 
 [mode.apps.binding]
+
+# Browsers
 a = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Arc.app', 'mode main']
 b = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Brave\ Browser.app', 'mode main']
-c = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Notion\ Calendar.app', 'mode main']
-d = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=~/Applications/IntelliJ\ IDEA.app', 'mode main']
-e = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Microsoft\ Excel.app', 'mode main']
-f = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/System/Library/CoreServices/Finder.app', 'mode main']
-g = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/ChatGPT.app', 'mode main']
-i = ['exec-and-forget open -b com.apple.systempreferences', 'mode main']
-j = ["exec-and-forget osascript -e 'tell application id \"net.java.openjdk.java\" to activate'"]
-m = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Notion\ Mail.app', 'mode main']
-p = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Postman.app', 'mode main']
-s = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Spotify.app', 'mode main']
-t = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Microsoft\ Teams.app', 'mode main']
-v = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Visual\ Studio\ Code.app', 'mode main']
-w = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Warp.app', 'mode main']
 z = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Zen.app', 'mode main']
 
+# Development tools
+d = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=~/Applications/IntelliJ\ IDEA.app', 'mode main']
+j = ["exec-and-forget osascript -e 'tell application id \"net.java.openjdk.java\" to activate'"]
+p = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Postman.app', 'mode main']
+v = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Visual\ Studio\ Code.app', 'mode main']
+w = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Warp.app', 'mode main']
+
+# Communication
+g = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/ChatGPT.app', 'mode main']
+m = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Notion\ Mail.app', 'mode main']
+t = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Microsoft\ Teams.app', 'mode main']
+
+# Productivity
+c = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Notion\ Calendar.app', 'mode main']
+e = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Microsoft\ Excel.app', 'mode main']
+
+# System & utilities
+f = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/System/Library/CoreServices/Finder.app', 'mode main']
+i = ['exec-and-forget open -b com.apple.systempreferences', 'mode main']
+s = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Spotify.app', 'mode main']
+
+# Quick links
 f10 = ['exec-and-forget open https://github.com/festina-advisor/advisor/pulls/krn_festina', 'mode main']
 f11 = ['exec-and-forget open https://github.com/notifications?query=is:unread', 'mode main']
 f12 = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/System/Applications/Messages.app', 'mode main']
 
+# Exit apps mode
 enter = ['mode main']
-esc = ['mode main']
+esc   = ['mode main']
 
+
+# ============================================================================
+# WINDOW DETECTION RULES
+# ============================================================================
+
+# Finder windows should float
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
 run = ['layout floating']
 
+# System Preferences should float
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
 run = ['layout floating']
 
-# IntelliJ debugger and dialog windows should float
+# IntelliJ debugger and tool windows should float
 [[on-window-detected]]
 if.app-id = 'com.jetbrains.intellij'
 if.window-title-regex-substring = '.*(Debug|Evaluate|Breakpoint|Variable|Console|Find|Replace).*'
 run = ['layout floating']
 
+# IntelliJ settings dialogs should float
 [[on-window-detected]]
 if.app-id = 'com.jetbrains.intellij'
 if.window-title-regex-substring = '^(Preferences|Settings|Project Structure)$'
