@@ -8,15 +8,17 @@ theme.load("tokyodark")
 
 
 sbar.begin_config()
-require("init")
+
+sbar.exec("borders"
+  .. " active_color='" .. theme.border_active .. "'"
+  .. " inactive_color='" .. theme.border_inactive .. "'"
+  .. " width=3.5"
+  .. " hidpi=off"
+  .. " style=round")
+
+  require("init")
 sbar.hotload(true)
 sbar.end_config()
 sbar.event_loop()
 
 
-sbar.exec("borders"
-  .. " active_color=" .. theme.border_active
-  .. " inactive_color=" .. theme.border_inactive
-  .. " width=3.0"
-  .. " hidpi=on"
-  .. " style=rounded")
