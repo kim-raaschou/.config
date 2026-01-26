@@ -27,7 +27,7 @@ exec-on-workspace-change = ['/bin/bash', '-c',
 on-mode-changed = ['exec-and-forget sketchybar --trigger aerospace_mode_change MODE="$(aerospace list-modes --current)"']
 
 # Notify Sketchybar about focus changes
-on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_focus_change FOCUSED_WINDOW_ID=$AEROSPACE_WINDOW_ID FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE']
+on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_focus_change FOCUSED_WINDOW_ID=$AEROSPACE_WINDOW_ID']
 
 
 # ============================================================================
