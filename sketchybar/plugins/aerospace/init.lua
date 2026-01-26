@@ -8,7 +8,9 @@ local setup = require("plugins.aerospace.setup")
 local update = require("plugins.aerospace.update")
 local cli = require("plugins.aerospace.cli")
 local logger = require("util.logger")
-local debounce = require("util.debounce")
+local create_debounce = require("util.create_debounce")
+
+local debounce = create_debounce()
 
 local on_focus_change = debounce(0.1, function(env)
   logger("[EVENT] aerospace_focus_change", env)
