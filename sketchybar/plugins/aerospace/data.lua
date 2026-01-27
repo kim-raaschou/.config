@@ -22,26 +22,18 @@ local function transform(raw_workspaces)
       local lookup_key = ws_key .. ":" .. app_name
       local app_entry = app_lookup[lookup_key]
 
-      if not app_entry then
         app_entry = {
           name = app_name,
-          count = 0,
-          windows = {},
-          bundle_id = "app." .. item["app-bundle-id"],
-          bundle_path = item["app-bundle-path"]
+          count = 1,
+          window_id = item["window-id"],
+          title = item["window-title"],
+          bundle_path = item["app-bundle-path"],
+          bundle_id = "app." .. item["app-bundle-id"]
         }
 
         local ws_index = workspace_lookup[ws_key]
         table.insert(workspaces[ws_index].apps, app_entry)
         app_lookup[lookup_key] = app_entry
-      end
-
-      app_entry_count[app_entry.name] = (app_entry_count[app_entry.name] or 0) + 1
-
-      table.insert(app_entry.windows, {
-        id = item["window-id"],
-        title = item["window-title"]
-      })
     end
   end
 

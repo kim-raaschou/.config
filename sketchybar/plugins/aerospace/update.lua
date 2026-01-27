@@ -25,25 +25,23 @@ return function(workspace_data, focused_window_id)
     local appIndex = 0
 
     for _, app in ipairs(ws.apps) do
-      for _, window in ipairs(app.windows) do
         appIndex = appIndex + 1
 
         sbar.set("space." .. ws.id .. ".app." .. appIndex, {
           drawing = true,
           display = ws.display,
-          click_script = "aerospace focus --window-id " .. window.id,
+          click_script = "aerospace focus --window-id " .. app.window_id,
           label = { string = app.count > 1 and "􀕩" or "" },
           icon = {
             background = {
               drawing = true,
               image = {
                 string = BUNDLE_ID_OVERRIDES[app.bundle_id] or app.bundle_id,
-                border_color = window.id == tonumber(focused_window_id or 0) and theme.app_border_focused or "",
+                border_color = app.window_id == tonumber(focused_window_id or 0) and theme.app_border_focused or "",
               }
             },
           }
         })
-      end
     end
 
     for i = appIndex + 1, MAX_APPS_PER_WORKSPACE do
