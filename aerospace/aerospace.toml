@@ -40,8 +40,7 @@ inner.vertical   = 7
 outer.left       = 2
 outer.right      = 2
 outer.bottom     = 2
-outer.top        = [ {monitor."BenQ RD28*" = 42 }, 7]
-
+outer.top        = [ {monitor."BenQ RD28*" = 42 }, { monitor."Built-in*" = 10}, 10]
 
 # ============================================================================
 # WORKSPACE TO MONITOR ASSIGNMENT
