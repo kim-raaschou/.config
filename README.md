@@ -1,102 +1,60 @@
 # macOS Tiling Window Manager Configuration
 
-A streamlined macOS setup featuring AeroSpace tiling window manager with deep SketchyBar integration for workspace visualization and system monitoring.
+AeroSpace tiling window manager with SketchyBar integration for workspace visualization and system monitoring.
 
 ## Features
 
-- **5 Workspaces** with multi-monitor support and custom gap configurations
-- **Modal Interface** - Three operation modes (main, window, apps) for efficient workflow
-- **Dynamic Status Bar** - Real-time workspace indicators, app icons, and window focus tracking
-- **Smart Window Management** - Automatic floating rules for dialogs and tool windows
-- **Application Launcher** - Quick access to 17+ apps via keyboard shortcuts
-- **GitHub Notifications** - Integrated notification monitoring in the status bar
-- **Visual Window Borders** - Active window highlighting with custom colors
-- **System Monitoring** - CPU and RAM usage display
+- 5 workspaces with multi-monitor support
+- Modal interface (main/window/apps modes)
+- Real-time workspace indicators and window focus tracking
+- Quick access app launcher
+- GitHub notifications integration
+- Visual window borders with active window highlighting
 
 ## Dependencies
 
-### Core Tools
-
 ```bash
-# AeroSpace - Tiling window manager
+# Core tools
 brew install --cask nikitabobko/tap/aerospace
-
-# SketchyBar - Customizable status bar with Lua support
 brew install felixkratz/formulae/sketchybar
-
-# Borders - Window border highlighting
 brew install felixkratz/formulae/borders
-
-# GitHub CLI - For notification monitoring
 brew install gh
-```
 
-### Optional Tools
-
-```bash
-# Raycast - For multi-window app selection
+# Optional: Multi-window app selection
 brew install --cask raycast
-# Install the AeroSpace extension: https://www.raycast.com/limonkufu/aerospace
+# Install AeroSpace extension: https://www.raycast.com/limonkufu/aerospace
 ```
 
-### Fonts
-
-- **SF Pro** - Apple system font (pre-installed on macOS)
-- **SF Symbols** - Icon font (pre-installed on macOS)
+**Fonts:** SF Pro and SF Symbols (pre-installed on macOS)
 
 ## Installation
 
-1. **Install dependencies** (see above)
+```bash
+# Clone repository
+git clone https://github.com/kim-raaschou/.config.git ~/.config
 
-2. **Clone this repository**
-   ```bash
-   git clone https://github.com/kim-raaschou/.config.git ~/.config
-   ```
+# Authenticate GitHub CLI
+gh auth login
 
-3. **Authenticate GitHub CLI** (for notifications)
-   ```bash
-   gh auth login
-   ```
+# Start services
+brew services start felixkratz/formulae/sketchybar
+brew services start felixkratz/formulae/borders
+open -a AeroSpace
 
-4. **Start services**
-   ```bash
-   brew services start felixkratz/formulae/sketchybar
-   brew services start felixkratz/formulae/borders
-   ```
-
-5. **Set AeroSpace to start at login** (already enabled in config)
-   ```bash
-   # Open AeroSpace, it will auto-start on next login
-   open -a AeroSpace
-   ```
-
-6. **Restart to apply all settings**
+# Restart to apply all settings
+```
 
 ## Configuration
 
-### File Locations
+**Files:**
+- AeroSpace: `~/.config/aerospace/aerospace.toml`
+- SketchyBar: `~/.config/sketchybar/` (Lua)
+- Themes: `~/.config/sketchybar/themes/` (tokyodark, tokyonight, catppuccin, nord)
 
-- **AeroSpace**: `~/.config/aerospace/aerospace.toml`
-- **SketchyBar**: `~/.config/sketchybar/` (Lua-based)
-- **Themes**: `~/.config/sketchybar/themes/`
-
-### Customization
-
-**Change workspace gaps:**
-Edit `aerospace.toml` and modify the `[gaps]` section.
-
-**Switch themes:**
-Edit `~/.config/sketchybar/theme.lua` and change the require path:
-```lua
--- Available: tokyodark, tokyonight, catppuccin, nord
-return require("themes.tokyodark")
-```
-
-**Modify app launcher:**
-Edit the `[mode.apps.binding]` section in `aerospace.toml`.
-
-**Adjust workspace count:**
-Modify the `workspace-to-monitor-force-assignment` and keybindings in `aerospace.toml`.
+**Common edits:**
+- Workspace gaps: Modify `[gaps]` in `aerospace.toml`
+- Theme: Change require path in `theme.lua`
+- App launcher: Edit `[mode.apps.binding]` in `aerospace.toml`
 
 ## Keyboard Shortcuts
 
@@ -107,62 +65,51 @@ Modify the `workspace-to-monitor-force-assignment` and keybindings in `aerospace
 | `Cmd+Ctrl+Alt+A` | Enter Apps mode |
 | `Esc` | Return to Main mode |
 
-### Main Mode (Default)
+### Main Mode
 | Shortcut | Action |
 |----------|--------|
-| `Cmd+Ctrl+Alt+←→↑↓` | Focus window (with wrap-around) |
-| `Cmd+Ctrl+Alt+1-5` | Switch to workspace 1-5 |
-| `Cmd+Ctrl+Alt+Shift+1-5` | Move window to workspace 1-5 |
-| `Cmd+Ctrl+Alt+Shift+←→` | Navigate between workspaces |
-| `Cmd+Ctrl+Alt+Enter` | Toggle layout (tiles/accordion) |
+| `Cmd+Ctrl+Alt+←→↑↓` | Focus window |
+| `Cmd+Ctrl+Alt+1-5` | Switch to workspace |
+| `Cmd+Ctrl+Alt+Shift+1-5` | Move window to workspace |
+| `Cmd+Ctrl+Alt+Shift+←→` | Navigate workspaces |
+| `Cmd+Ctrl+Alt+Enter` | Toggle tiles/accordion layout |
 
 ### Window Mode
 | Shortcut | Action |
 |----------|--------|
-| `←→↑↓` | Move window in direction |
+| `←→↑↓` | Move window |
 | `Shift+Ctrl+Alt+←→↑↓` | Join window to container |
 | `Shift+←→↑↓` | Resize window (±75px) |
-| `B` | Balance window sizes and return to Main mode |
-| `Q` | Reload config, restart services, return to Main mode |
-| `Esc` | Return to Main mode |
+| `B` | Balance sizes, exit mode |
+| `Q` | Kill borders, restart sketchybar, reload config, exit mode |
+| `Esc` | Exit mode |
 
-### Apps Mode (Quick Launcher)
-| Key | Application |
-|-----|-------------|
-| `A` | Arc Browser |
-| `B` | Brave Browser |
-| `C` | Notion Calendar |
-| `D` | IntelliJ IDEA |
-| `E` | Microsoft Excel |
-| `F` | Finder |
-| `G` | ChatGPT |
-| `J` | Java (OpenJDK) |
-| `M` | Notion Mail |
-| `P` | Postman |
-| `S` | Spotify |
-| `T` | Microsoft Teams |
-| `V` | Visual Studio Code |
-| `W` | Warp Terminal |
-| `Z` | Zen Browser |
-| `F10` | Custom GitHub URL |
-| `F11` | GitHub Notifications |
-| `F12` | Messages |
+### Apps Mode
+| Key | App | Key | App |
+|-----|-----|-----|-----|
+| `A` | Arc | `M` | Notion Mail |
+| `B` | Brave | `P` | Postman |
+| `C` | Notion Calendar | `S` | Spotify |
+| `D` | IntelliJ IDEA | `T` | Teams |
+| `E` | Excel | `V` | VS Code |
+| `F` | Finder | `W` | Warp |
+| `G` | ChatGPT | `Z` | Zen |
+| `J` | Java | `F10` | Custom URL |
+| | | `F11` | GitHub Notifications |
+| | | `F12` | Messages |
 
 ## Troubleshooting
 
-### Reload Configuration
-Press `Q` in Window mode to reload AeroSpace config and restart services, or manually:
+**Reload config:** Press `Q` in Window mode or run:
 ```bash
 brew services restart felixkratz/formulae/sketchybar
 brew services restart felixkratz/formulae/borders
 killall AeroSpace && open -a AeroSpace
 ```
 
-### GitHub Notifications
-Verify GitHub CLI authentication:
+**GitHub notifications:** Verify authentication:
 ```bash
 gh auth status
-gh api notifications
 ```
 
 ## Credits

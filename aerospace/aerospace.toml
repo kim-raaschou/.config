@@ -120,7 +120,7 @@ shift-down  = ['resize height -75']
 # Utilities
 b = ['balance-sizes', 'mode main']
 q = [
-    'exec-and-forget brew services restart felixkratz/formulae/borders',
+    'exec-and-forget killall borders',
     'exec-and-forget brew services restart felixkratz/formulae/sketchybar',
     'reload-config',
     'mode main'
