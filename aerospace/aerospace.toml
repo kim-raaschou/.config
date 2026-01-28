@@ -40,7 +40,7 @@ inner.vertical   = 7
 outer.left       = 2
 outer.right      = 2
 outer.bottom     = 2
-outer.top        = [ {monitor."BenQ RD28*" = 42 }, { monitor."Built-in*" = 10}, 10]
+outer.top        = [ {monitor."BenQ RD28*" = 42 }, { monitor."Built-in*" = 10}, 100]
 
 # ============================================================================
 # WORKSPACE TO MONITOR ASSIGNMENT
@@ -125,10 +125,8 @@ q = [
     'reload-config',
     'mode main'
 ]
-backspace = ['reload-config', 'mode main']
 
 # Exit window mode
-enter = ['mode main']
 esc   = ['mode main']
 
 
@@ -170,7 +168,6 @@ f11 = ['exec-and-forget open https://github.com/notifications?query=is:unread', 
 f12 = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/System/Applications/Messages.app', 'mode main']
 
 # Exit apps mode
-enter = ['mode main']
 esc   = ['mode main']
 
 
