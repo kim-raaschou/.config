@@ -1,5 +1,6 @@
 # Ignore everything by default
 /*
+!README.md
 # Whitelist what we want to track
 !.gitignore
 !aerospace/
