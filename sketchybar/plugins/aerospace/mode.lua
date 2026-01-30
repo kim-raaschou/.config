@@ -11,11 +11,10 @@ local modes = {
 }
 
 local event_handler_item = sbar.add("item", "space.mode.event_handler", {
-  padding_right = 10,
   label = {
     string = modes["main"],
     color = theme.mode_main,
-    width = 24,
+    width = 28,
     y_offset = 1,
     font = {
       family = "SF Pro",

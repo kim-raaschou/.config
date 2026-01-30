@@ -7,8 +7,6 @@ return function (workspace_data)
   for _, ws in ipairs(workspace_data) do
 
     sbar.add("item", "space." .. ws.id, {
-      padding_right = 5,
-      padding_left = 0,
       label = {
         align = "center",
         string = tostring(ws.id),
@@ -18,8 +16,6 @@ return function (workspace_data)
           size = 18.0
         },
         y_offset = 1,
-        padding_right = 10,
-        padding_left = 10,
         background = {
           drawing = false,
           height = 3,
