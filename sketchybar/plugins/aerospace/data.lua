@@ -37,10 +37,27 @@ local function transform(raw_workspaces)
     end
   end
 
-  for _, ws in ipairs(workspaces) do
+  local any_showable_ws = false
+  for idx, ws in ipairs(workspaces) do
     for _, app in ipairs(ws.apps) do
       app.count = app_entry_count[app.name] or 0
     end
+
+    ws.showable = idx == 1 or #ws.apps > 0 or any_showable_ws
+    any_showable_ws = any_showable_ws or ws.showable
+  end
+
+  local only_first_ws_has_apps = true
+  for idx, ws in ipairs(workspaces) do
+    if idx > 1 and #ws.apps > 0 then
+      only_first_ws_has_apps = false
+      break
+    end
+  end
+
+  local show_labels = not only_first_ws_has_apps
+  for _, ws in ipairs(workspaces) do
+    ws.show_label = show_labels
   end
 
   return workspaces
