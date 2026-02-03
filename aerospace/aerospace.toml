@@ -69,10 +69,9 @@ cmd-ctrl-alt-a = ['mode apps']
 cmd-ctrl-alt-enter = ['layout tiles accordion']
 
 # Focus navigation (wrap around workspace boundaries)
-cmd-ctrl-alt-left  = ['focus left --boundaries-action wrap-around-the-workspace']
-cmd-ctrl-alt-right = ['focus right --boundaries-action wrap-around-the-workspace']
-cmd-ctrl-alt-up    = ['focus up --boundaries-action wrap-around-the-workspace']
-cmd-ctrl-alt-down  = ['focus down --boundaries-action wrap-around-the-workspace']
+
+cmd-ctrl-alt-left  = ['focus dfs-prev --boundaries-action wrap-around-the-workspace']
+cmd-ctrl-alt-right = ['focus dfs-next --boundaries-action wrap-around-the-workspace']
 
 # Workspace navigation
 cmd-ctrl-alt-shift-left  = 'workspace --wrap-around prev'
@@ -111,6 +110,12 @@ shift-ctrl-alt-right = ['join-with right']
 shift-ctrl-alt-up    = ['join-with up']
 shift-ctrl-alt-down  = ['join-with down']
 
+# Focus
+cmd-ctrl-alt-left  = ['focus left --boundaries-action wrap-around-the-workspace']
+cmd-ctrl-alt-right = ['focus right --boundaries-action wrap-around-the-workspace']
+cmd-ctrl-alt-up    = ['focus up --boundaries-action wrap-around-the-workspace']
+cmd-ctrl-alt-down  = ['focus down --boundaries-action wrap-around-the-workspace']
+
 # Resize windows
 shift-left  = ['resize width -75']
 shift-right = ['resize width +75']
@@ -118,7 +123,7 @@ shift-up    = ['resize height +75']
 shift-down  = ['resize height -75']
 
 # Utilities
-b = ['balance-sizes', 'mode main']
+f = ['flatten-workspace-tree', 'mode main']
 q = [
     'exec-and-forget killall borders',
     'exec-and-forget brew services restart felixkratz/formulae/sketchybar',
