@@ -12,7 +12,7 @@ local BUNDLE_ID_OVERRIDES = {
 return function(workspace_data, focused_window_id)
   for _, ws in ipairs(workspace_data) do
     sbar.set("space." .. ws.id, {
-      drawing = ws.show_label,
+      drawing = ws.showable,
       display = ws.display,
       label = {
         color = ws.focused and theme.workspace_focused or
@@ -21,10 +21,6 @@ return function(workspace_data, focused_window_id)
       },
       background = { drawing = ws.focused and ws.show_label },
     })
-
-    if not ws.showable then
-      sbar.set("space." .. ws.id, { drawing = false })
-    end
 
     local appIndex = 0
 

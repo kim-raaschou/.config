@@ -2,7 +2,6 @@ local function transform(raw_workspaces)
   local workspaces = {}
   local app_entry_count = {}
   local workspace_lookup = {}
-  local app_lookup = {}
 
   for _, item in pairs(raw_workspaces or {}) do
     local ws_key = tostring(item.workspace)
@@ -19,45 +18,35 @@ local function transform(raw_workspaces)
 
     if item["app-name"] then
       local app_name = item["app-name"]
-      local lookup_key = ws_key .. ":" .. app_name
-      local app_entry = app_lookup[lookup_key]
 
-        app_entry = {
-          name = app_name,
-          count = 1,
-          window_id = item["window-id"],
-          title = item["window-title"],
-          bundle_path = item["app-bundle-path"],
-          bundle_id = "app." .. item["app-bundle-id"]
-        }
+      local app_entry = {
+        name = app_name,
+        count = 1,
+        window_id = item["window-id"],
+        title = item["window-title"],
+        bundle_path = item["app-bundle-path"],
+        bundle_id = "app." .. item["app-bundle-id"]
+      }
 
-        local ws_index = workspace_lookup[ws_key]
-        table.insert(workspaces[ws_index].apps, app_entry)
-        app_lookup[lookup_key] = app_entry
+      local ws_index = workspace_lookup[ws_key]
+      table.insert(workspaces[ws_index].apps, app_entry)
+      app_entry_count[app_entry.name] = (app_entry_count[app_entry.name] or 0) + 1
     end
   end
 
-  local any_showable_ws = false
-  for idx, ws in ipairs(workspaces) do
+  local show_all_ws = false
+  for ws_key, ws in ipairs(workspaces) do
     for _, app in ipairs(ws.apps) do
-      app.count = app_entry_count[app.name] or 0
+      app.count = app_entry_count[app.name]
     end
 
-    ws.showable = idx == 1 or #ws.apps > 0 or any_showable_ws
-    any_showable_ws = any_showable_ws or ws.showable
-  end
-
-  local only_first_ws_has_apps = true
-  for idx, ws in ipairs(workspaces) do
-    if idx > 1 and #ws.apps > 0 then
-      only_first_ws_has_apps = false
-      break
+    if not show_all_ws and ws_key > 1 and #ws.apps > 0 then
+      show_all_ws = true
     end
   end
 
-  local show_labels = not only_first_ws_has_apps
   for _, ws in ipairs(workspaces) do
-    ws.show_label = show_labels
+    ws.showable = show_all_ws;
   end
 
   return workspaces

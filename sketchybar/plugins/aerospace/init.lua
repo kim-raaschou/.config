@@ -12,7 +12,7 @@ local create_debounce = require("util.create_debounce")
 
 local debounce = create_debounce()
 
-local on_focus_change = debounce(0.05, function(env)
+local on_focus_change = debounce(0.025, function(env)
   logger("[EVENT] aerospace_focus_change", env)
   cli.fetch_workspaces(function(raw_workspaces)
     local workspace_data = data_builder.transform(raw_workspaces)

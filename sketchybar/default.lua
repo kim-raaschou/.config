@@ -4,6 +4,7 @@ sbar.default({
   padding_right = 4,
   label = {
     padding_left = 6,
-    padding_right = 6
+    padding_right = 6,
+    font = { family = "SF Pro", style = "Regular" }
   }
 })
