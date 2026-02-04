@@ -6,3 +6,5 @@ require("items.github")
 
 -- stasbar.add("alias", "Kontrolcenter,RAM", { position = "right" })
 sbar.add("alias", "Kontrolcenter,CPU", { position = "right" })
+
+require("items.spotify")
