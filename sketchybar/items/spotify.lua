@@ -4,35 +4,16 @@ local logger = require("util.logger")
 
 local SPOTIFY_EVENT = "com.spotify.client.PlaybackStateChanged"
 local SPOTIFY_ARTWORK_CACHE_DIR = os.getenv("HOME") .. "/.cache/sketchybar/spotify"
-local SPOTIFY_URL_LARGE = "0000b273"
-local SPOTIFY_URL_SMALL = "00004851"
-
 local SPOTIFY_ARTWORK_SCRIPT = [[
   if application "Spotify" is running then
     tell application "Spotify"
       if player state is playing or player state is paused then
-        set trackName to name of current track
-        set trackArtist to artist of current track
-        set trackAlbum to album of current track
-        set trackId to id of current track
-        set artworkUrl to artwork url of current track
-        set playerState to player state as string
-        set trackDuration to duration of current track
-        set trackPosition to player position
-        set trackPopularity to popularity of current track
-        set trackDiscNumber to disc number of current track
-        set trackTrackNumber to track number of current track
-        set playerVolume to sound volume
-        set playerRepeating to repeating
-        set playerShuffling to shuffling
-
-        return trackName & "|" & trackArtist & "|" & trackAlbum & "|" & trackId & "|" & artworkUrl & "|" & playerState & "|" & trackDuration & "|" & trackPosition & "|" & trackPopularity & "|" & trackDiscNumber & "|" & trackTrackNumber & "|" & playerVolume & "|" & playerRepeating & "|" & playerShuffling
+        return artwork url of current track
       end if
     end tell
   end if
   return ""]]
 
--- Track the current track ID to avoid unnecessary updates
 local current_track_id = nil
 
 local spotify_artist = sbar.add("item", "spotify.artist", {
@@ -103,17 +84,50 @@ local function escape_quotes(str)
   return str:gsub("'", "'\\''")
 end
 
-local function fetch_cover_artwork(track_id, artwork_url, callback)
-  local cache_path = SPOTIFY_ARTWORK_CACHE_DIR .. "/" .. track_id .. ".jpg"
-  local file = io.open(cache_path, "r")
+local function trim(str)
+  return str:match("^%s*(.-)%s*$")
+end
 
-  if file then
-    file:close()
+local function spotify_event_from(env)
+  if env and env.INFO then
+    return {
+      track_id = (env.INFO["Track ID"] or ""):match("track:(.+)$"),
+      track_name = env.INFO["Name"],
+      artist = env.INFO["Artist"],
+      album = env.INFO["Album"],
+      album_artist = env.INFO["Album Artist"],
+      track_number = env.INFO["Track Number"],
+      disc_number = env.INFO["Disc Number"],
+      has_artwork = env.INFO["Has Artwork"],
+      player_state = env.INFO["Player State"],
+      duration = env.INFO["Duration"],
+      playback_position = env.INFO["Playback Position"],
+      play_count = env.INFO["Play Count"],
+      popularity = env.INFO["Popularity"]
+    }
+  end
+
+  return {}
+end
+
+local function fetch_cover_artwork(track_id, callback)
+  if not track_id or track_id == "" then return end
+
+  local cache_path = SPOTIFY_ARTWORK_CACHE_DIR .. "/" .. track_id .. ".jpg"
+  local cache_file = io.open(cache_path, "r")
+
+  if cache_file then
+    cache_file:close()
     callback(cache_path)
-  else
-    artwork_url = (artwork_url or ""):match("^%s*(.-)%s*$")
+    return
+  end
+
+  sbar.exec("osascript -e '" .. SPOTIFY_ARTWORK_SCRIPT .. "'", function(artwork_url)
+    artwork_url = trim(artwork_url or "")
     if artwork_url == "" then return end
 
+    local SPOTIFY_URL_LARGE = "0000b273"
+    local SPOTIFY_URL_SMALL = "00004851"
     local small_url = artwork_url:gsub(SPOTIFY_URL_LARGE, SPOTIFY_URL_SMALL)
     local download_cmd = string.format("curl -s '%s' -o '%s'", escape_quotes(small_url), escape_quotes(cache_path))
 
@@ -122,94 +136,56 @@ local function fetch_cover_artwork(track_id, artwork_url, callback)
         callback(cache_path)
       end
     end)
-  end
-end
-
-local function parse_track_info(callback)
-  local function split(str, delimiter)
-    local result = {}
-    for match in (str .. delimiter):gmatch("(.-)" .. delimiter) do
-      table.insert(result, match)
-    end
-    return result
-  end
-  local function trim(str) return str:match("^%s*(.-)%s*$") end
-
-  sbar.exec("osascript -e '" .. SPOTIFY_ARTWORK_SCRIPT .. "'", function(output)
-    if not output or output == "" then
-      return
-    end
-
-    local parts = split(output, "|")
-
-    if #parts >= 8 then
-      callback({
-        name = trim(parts[1]),
-        artist = trim(parts[2]),
-        album = trim(parts[3]),
-        id = trim(parts[4]),
-        artwork_url = trim(parts[5]),
-        player_state = trim(parts[6]),
-        duration = tonumber(parts[7]),
-        position = tonumber(parts[8]),
-        display = string.format("%s - %s", trim(parts[1]), trim(parts[2]))
-      })
-    end
   end)
 end
 
-local function update_spotify(env)
-  logger("Spotify update triggered", env)
-  if not env or not env.INFO or env.INFO["Player State"] == "Stopped" then return end
-
-  parse_track_info(function(track_info)
-    local track_id = (track_info.id or ""):match("track:(.+)$")
-    if track_id == current_track_id then return end
-
-    current_track_id = track_id
-
-    spotify_bracket:set({ drawing = true })
-
-    spotify_song:set({
-      drawing = true,
-      label = { string = truncate_string(track_info.name, 14) }
-    })
-
-    spotify_artist:set({
-      drawing = true,
-      label = { string = truncate_string(track_info.artist, 20) }
-    })
-
-    fetch_cover_artwork(track_id, track_info.artwork_url, function(image_path)
-      spotify_cover:set({
-        drawing = true,
-        icon = { background = { image = { string = image_path } } }
-      })
-    end)
-  end)
-end
-
-local function show_if_spotify_is_running()
-  sbar.exec("pgrep -x Spotify", function(_, exit_code)
-    local spotify_is_running = exit_code == 0
-    if not spotify_is_running then
-      current_track_id = nil
-      spotify_bracket:set({ drawing = false })
-      spotify_cover:set({ drawing = false })
-      spotify_song:set({ drawing = false })
-      spotify_artist:set({ drawing = false })
-    end
-  end)
-end
+sbar.add("event", "spotify_change", SPOTIFY_EVENT)
 
 local spotify_subscription = sbar.add("item", "spotify.subscription", {
-  update_freq = 1,
+  update_freq = 2,
   drawing = false
 })
 
-sbar.add("event", "spotify_change", SPOTIFY_EVENT)
-spotify_subscription:subscribe("spotify_change", update_spotify)
-spotify_subscription:subscribe("routine", show_if_spotify_is_running)
+spotify_subscription:subscribe("spotify_change", function(env)
+  logger("Spotify event received", env)
+  local spotify_event = spotify_event_from(env)
+
+  if not spotify_event.track_id or current_track_id == spotify_event.track_id then return end
+
+  current_track_id = spotify_event.track_id
+
+  spotify_bracket:set({ drawing = true })
+
+  spotify_song:set({
+    drawing = true,
+    label = { string = truncate_string(spotify_event.track_name, 14) }
+  })
+  spotify_artist:set({
+    drawing = true,
+    label = { string = truncate_string(spotify_event.artist, 20) }
+  })
+
+  fetch_cover_artwork(spotify_event.track_id, function(image_path)
+    spotify_cover:set({
+      drawing = true,
+      icon = { background = { image = { string = image_path } } }
+    })
+  end)
+end)
+
+spotify_subscription:subscribe("routine", function()
+  sbar.exec("pgrep -x Spotify", function(_, exit_code)
+    local spotify_is_running = exit_code == 0
+    spotify_bracket:set({ drawing = spotify_is_running })
+    spotify_cover:set({ drawing = spotify_is_running })
+    spotify_song:set({ drawing = spotify_is_running })
+    spotify_artist:set({ drawing = spotify_is_running })
+
+    if not spotify_is_running then
+      current_track_id = nil
+    end
+  end)
+end)
 
 sbar.exec("mkdir -p '" .. SPOTIFY_ARTWORK_CACHE_DIR .. "'")
 
