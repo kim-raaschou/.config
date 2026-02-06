@@ -33,7 +33,9 @@ local event_handler = function(env)
                 -- If nil: set layout explicitly (happens when no window was focused)
                 sbar.exec("aerospace layout tiles accordion")
               end
-               sbar.exec("sketchybar --trigger space_windows_change")
+
+              -- Trigger UI refresh (full workspace fetch)
+              sbar.exec("sketchybar --trigger space_windows_change")
             end
           end)
       end
