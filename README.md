@@ -10,6 +10,7 @@ AeroSpace tiling window manager with SketchyBar integration for workspace visual
 - Quick access app launcher
 - GitHub notifications integration
 - Visual window borders with active window highlighting
+- Workspace manager for resetting layouts and consolidating windows
 
 ## Dependencies
 
@@ -80,6 +81,7 @@ open -a AeroSpace
 | `←→↑↓` | Move window |
 | `Shift+Ctrl+Alt+←→↑↓` | Join window to container |
 | `Shift+←→↑↓` | Resize window (±75px) |
+| `F` | Reset layout (move all windows to workspace 1), exit mode |
 | `B` | Balance sizes, exit mode |
 | `Q` | Kill borders, restart sketchybar, reload config, exit mode |
 | `Esc` | Exit mode |
@@ -97,6 +99,28 @@ open -a AeroSpace
 | `J` | Java | `F10` | Custom URL |
 | | | `F11` | GitHub Notifications |
 | | | `F12` | Messages |
+
+## Workspace Manager
+
+Reset AeroSpace layout by consolidating all windows to a target workspace while preserving focus on your current window.
+
+**Usage:**
+
+*Keyboard shortcut:* `Cmd+Ctrl+Alt+W` then `F` — Enter Window mode, move all windows to workspace 1, exit mode
+
+*CLI command:*
+```bash
+sketchybar --trigger aerospace_reset_layout                  # Default to workspace 1
+sketchybar --trigger aerospace_reset_layout TARGET_WS=3      # Custom workspace
+```
+
+**Behavior:**
+- Moves all windows from all workspaces to the target workspace
+- Preserves focus on the currently focused window
+- Automatically switches to the target workspace when restoring focus
+- Sets layout to `tiles accordion` when no window is focused (e.g., empty workspace)
+
+**Implementation:** `~/.config/sketchybar/plugins/aerospace/workspace_manager.lua`
 
 ## Troubleshooting
 
