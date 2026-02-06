@@ -1,9 +1,14 @@
 local sbar = require("sketchybar")
 local theme = require("theme")
+local logger = require("util.logger")
+
+local GITHUB_NOTIFICATIONS_COUNT = "GH_TOKEN=$(gh auth token --user krn_festina) " ..
+    "gh api notifications " ..
+    "--jq '[.[] | select(.unread == true)] | length'"
 
 local github = sbar.add("item", "github", {
     updates = "when_shown",
-    update_freq = 120,
+    update_freq = 1,
     position = "right",
     click_script = "open https://github.com/notifications",
     icon = {
@@ -19,9 +24,8 @@ local github = sbar.add("item", "github", {
 })
 
 github:subscribe("routine", function()
-    local notifications_count = "gh api notifications --jq '[.[] | select(.unread == true)] | length'"
-
-    sbar.exec(notifications_count, function(count)
+    sbar.exec(GITHUB_NOTIFICATIONS_COUNT, function(count)
+        logger("[GITHUB] Unread notifications count: " .. count)
         count = tonumber(count or "0")
 
         local update_freq
@@ -43,6 +47,3 @@ github:subscribe("routine", function()
         end)
     end)
 end)
-
-
-return github
