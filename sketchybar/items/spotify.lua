@@ -2,19 +2,9 @@ local sbar = require("sketchybar")
 local theme = require("theme")
 local logger = require("util.logger")
 
-local SPOTIFY_EVENT = "com.spotify.client.PlaybackStateChanged"
 local SPOTIFY_ARTWORK_CACHE_DIR = os.getenv("HOME") .. "/.cache/sketchybar/spotify"
-local SPOTIFY_ARTWORK_SCRIPT = [[
-  if application "Spotify" is running then
-    tell application "Spotify"
-      if player state is playing or player state is paused then
-        return artwork url of current track
-      end if
-    end tell
-  end if
-  return ""]]
 
-local current_track_id = nil
+local current_spotify_event = nil
 
 local spotify_artist = sbar.add("item", "spotify.artist", {
   position = "right",
@@ -122,6 +112,16 @@ local function fetch_cover_artwork(track_id, callback)
     return
   end
 
+  local SPOTIFY_ARTWORK_SCRIPT = [[
+  if application "Spotify" is running then
+    tell application "Spotify"
+      if player state is playing or player state is paused then
+        return artwork url of current track
+      end if
+    end tell
+  end if
+  return ""]]
+
   sbar.exec("osascript -e '" .. SPOTIFY_ARTWORK_SCRIPT .. "'", function(artwork_url)
     artwork_url = trim(artwork_url or "")
     if artwork_url == "" then return end
@@ -139,7 +139,7 @@ local function fetch_cover_artwork(track_id, callback)
   end)
 end
 
-sbar.add("event", "spotify_change", SPOTIFY_EVENT)
+sbar.add("event", "spotify_change", "com.spotify.client.PlaybackStateChanged")
 
 local spotify_subscription = sbar.add("item", "spotify.subscription", {
   update_freq = 2,
@@ -150,11 +150,30 @@ spotify_subscription:subscribe("spotify_change", function(env)
   logger("Spotify event received", env)
   local spotify_event = spotify_event_from(env)
 
-  if not spotify_event.track_id or current_track_id == spotify_event.track_id then return end
+  if spotify_event.player_state == "Stopped" then
+    spotify_bracket:set({ drawing = false })
+    spotify_cover:set({ drawing = false })
+    spotify_song:set({ drawing = false })
+    spotify_artist:set({ drawing = false })
+    current_spotify_event = nil
+    return
+  end
 
-  current_track_id = spotify_event.track_id
+  local border_color = spotify_event.player_state == "Playing"
+      and theme.border_active
+      or theme.border_inactive
 
-  spotify_bracket:set({ drawing = true })
+  spotify_bracket:set({
+    drawing = true,
+    background = { border_color = border_color }
+  })
+
+  if current_spotify_event and current_spotify_event.track_id == spotify_event.track_id then
+    current_spotify_event = spotify_event
+    return
+  end
+
+  current_spotify_event = spotify_event
 
   spotify_song:set({
     drawing = true,
@@ -173,19 +192,21 @@ spotify_subscription:subscribe("spotify_change", function(env)
   end)
 end)
 
-spotify_subscription:subscribe("routine", function()
-  sbar.exec("pgrep -x Spotify", function(_, exit_code)
-    local spotify_is_running = exit_code == 0
-    spotify_bracket:set({ drawing = spotify_is_running })
-    spotify_cover:set({ drawing = spotify_is_running })
-    spotify_song:set({ drawing = spotify_is_running })
-    spotify_artist:set({ drawing = spotify_is_running })
+--spotify_subscription:subscribe("routine", function()
+  -- if current_spotify_event == nil then return end
 
-    if not spotify_is_running then
-      current_track_id = nil
-    end
-  end)
-end)
+  -- sbar.exec("pgrep -x Spotify", function(_, exit_code)
+    -- local spotify_is_running = exit_code == 0
+    -- if not spotify_is_running then
+      -- spotify_bracket:set({ drawing = false })
+      -- spotify_cover:set({ drawing = false })
+      -- spotify_song:set({ drawing = false })
+      -- spotify_artist:set({ drawing = false })
+      -- -- Reset state when Spotify quits
+      -- current_spotify_event = nil
+    -- end
+  -- end)
+--end)
 
 sbar.exec("mkdir -p '" .. SPOTIFY_ARTWORK_CACHE_DIR .. "'")
 
