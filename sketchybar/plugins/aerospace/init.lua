@@ -1,6 +1,6 @@
 require("plugins.aerospace.mode")
 require("plugins.aerospace.app_open")
-
+require("plugins.aerospace.workspace_manager")
 
 local sbar = require("sketchybar")
 local data_builder = require("plugins.aerospace.data")

@@ -123,7 +123,7 @@ shift-up    = ['resize height +75']
 shift-down  = ['resize height -75']
 
 # Utilities
-f = ['flatten-workspace-tree', 'mode main']
+f = ['exec-and-forget sketchybar --trigger aerospace_reset_layout TARGET_WS=1', 'mode main']
 q = [
     'exec-and-forget killall borders',
     'exec-and-forget brew services restart felixkratz/formulae/sketchybar',
@@ -168,7 +168,7 @@ i = ['exec-and-forget open -b com.apple.systempreferences', 'mode main']
 s = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Spotify.app', 'mode main']
 
 # Quick links
-f10 = ['exec-and-forget open https://github.com/festina-advisor/advisor/pulls/krn_festina', 'mode main']
+f10 = ['exec-and-forget open https://github.com/festina-advisor/advisor/issues?q=is:open+is:pr+author:@me', 'mode main']
 f11 = ['exec-and-forget open https://github.com/notifications?query=is:unread', 'mode main']
 f12 = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/System/Applications/Messages.app', 'mode main']
 
