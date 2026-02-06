@@ -1,8 +1,10 @@
 local sbar = require("sketchybar")
 local cli = require("plugins.aerospace.cli")
+local logger = require("util.logger")
 
 local event_handler = function(env)
   local target_ws = env.TARGET_WS or "1"
+  local commands = {}
 
   sbar.exec("aerospace list-windows --focused --format '%{window-id}'", function(focused_wid)
     focused_wid = focused_wid and tonumber(focused_wid)
@@ -10,34 +12,37 @@ local event_handler = function(env)
     cli.fetch_workspaces(function(data)
       if not data then return end
 
-      local window_ids = {}
+      -- Build move commands for all windows not on target workspace
       for _, item in ipairs(data) do
-        if item["window-id"] then
-          table.insert(window_ids, item["window-id"])
+        if item["workspace"] ~= target_ws and item["window-id"] then
+          table.insert(commands, "aerospace move-node-to-workspace --window-id " .. item["window-id"] .. " " .. target_ws)
         end
       end
 
-      if #window_ids == 0 then return end
+      if #commands == 0 then return end
 
-      local moved = 0
-      for _, wid in ipairs(window_ids) do
-        sbar.exec("aerospace move-node-to-workspace --window-id " .. wid .. " " .. target_ws,
-          function()
-            moved = moved + 1
-            if moved == #window_ids then
-              if focused_wid then
-                -- If focused_wid exists: restore focus (auto-switches to target workspace)
-                sbar.exec("aerospace focus --window-id " .. focused_wid)
-              else
-                -- If nil: set layout explicitly (happens when no window was focused)
-                sbar.exec("aerospace layout tiles accordion")
-              end
-
-              -- Trigger UI refresh (full workspace fetch)
-              sbar.exec("sketchybar --trigger space_windows_change")
-            end
-          end)
+      if focused_wid then
+        -- If focused_wid exists: restore focus (auto-switches to target workspace)
+        table.insert(commands, "aerospace focus --window-id " .. focused_wid)
+      else
+        -- If nil: set layout explicitly (happens when no window was focused)
+        table.insert(commands, "aerospace layout tiles accordion")
       end
+
+      -- Trigger UI refresh (debounced 150ms, full workspace fetch)
+      table.insert(commands, "sketchybar --trigger space_windows_change")
+
+      -- Execute all commands sequentially
+      local aerospace_commands = table.concat(commands, " && ")
+      sbar.exec(aerospace_commands, function(_, exit_code)
+        if exit_code == 0 then
+          logger("[WORKSPACE_MGR] Layout reset complete. Executed:\n  " ..
+            aerospace_commands:gsub(" && ", "\n  && "))
+        else
+          logger("[WORKSPACE_MGR] Failed (exit=" .. exit_code .. "). Commands:\n  " ..
+            aerospace_commands:gsub(" && ", "\n  && "))
+        end
+      end)
     end)
   end)
 end
