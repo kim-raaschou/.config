@@ -10,6 +10,7 @@ return function (workspace_data)
       label = {
         align = "center",
         string = tostring(ws.id),
+        width = 24,
         font = {
           family = "SF Pro",
           style = "Semibold",
