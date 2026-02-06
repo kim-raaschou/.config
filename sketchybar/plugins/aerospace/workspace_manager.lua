@@ -4,7 +4,6 @@ local cli = require("plugins.aerospace.cli")
 local event_handler = function(env)
   local target_ws = env.TARGET_WS or "1"
 
-  -- Get focused window ID (will be nil if no window is focused, e.g., empty workspace)
   sbar.exec("aerospace list-windows --focused --format '%{window-id}'", function(focused_wid)
     focused_wid = focused_wid and tonumber(focused_wid)
 
