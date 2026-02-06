@@ -20,6 +20,8 @@ local event_handler = function(env)
       end
     end
 
+    matchedApp = matchedApp or {}
+
     if matchedAppCount == 0 then
       logger("[APP_OPEN] No window found → Opening app")
       sbar.exec(string.format('open -a "%s"', appPath))
