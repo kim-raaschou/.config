@@ -36,10 +36,10 @@ local event_handler = function(env)
       local aerospace_commands = table.concat(commands, " && ")
       sbar.exec(aerospace_commands, function(_, exit_code)
         if exit_code == 0 then
-          logger("[WORKSPACE_MGR] Layout reset complete. Executed:\n  " ..
+          logger("[WS_MGR] Layout reset complete. Executed:\n  " ..
             aerospace_commands:gsub(" && ", "\n  && "))
         else
-          logger("[WORKSPACE_MGR] Failed (exit=" .. exit_code .. "). Commands:\n  " ..
+          logger("[WS_MGR] Failed (exit=" .. exit_code .. "). Commands:\n  " ..
             aerospace_commands:gsub(" && ", "\n  && "))
         end
       end)
