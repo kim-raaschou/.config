@@ -35,11 +35,11 @@ on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_focus_change
 # ============================================================================
 
 [gaps]
-inner.horizontal = 7
-inner.vertical   = 7
-outer.left       = 2
-outer.right      = 2
-outer.bottom     = 2
+inner.horizontal = 10
+inner.vertical   = 10
+outer.left       = 6
+outer.right      = 6
+outer.bottom     = 6
 outer.top        = [ {monitor."BenQ RD28*" = 42 }, { monitor."Built-in*" = 10}, 70]
 
 # ============================================================================
@@ -142,7 +142,8 @@ esc   = ['mode main']
 [mode.apps.binding]
 
 # Browsers
-a = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Arc.app', 'mode main']
+#a = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Arc.app', 'mode main']
+a = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Vivaldi.app', 'mode main']
 b = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Brave\ Browser.app', 'mode main']
 z = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Zen.app', 'mode main']
 
