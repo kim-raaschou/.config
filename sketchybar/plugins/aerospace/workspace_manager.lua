@@ -4,13 +4,13 @@ local logger = require("util.logger")
 
 local event_handler = function(env)
   local target_ws = env.TARGET_WS or "1"
-  local steps = {}
 
   sbar.exec("aerospace list-windows --focused --format '%{window-id}'", function(focused_wid)
     focused_wid = focused_wid and tonumber(focused_wid)
 
     cli.fetch_workspaces(function(data)
       if not data then return end
+      local steps = {}
 
       -- Build move commands for all windows not on target workspace
       for _, item in ipairs(data) do
@@ -19,25 +19,30 @@ local event_handler = function(env)
         end
       end
 
-      if #steps == 0 then return end
+      if #steps == 0 then 
+        sbar.exec("aerospace layout h_accordion && aerospace flatten-workspace-tree && sketchybar --trigger space_windows_change")
+        return
+      end
 
       if focused_wid then
         table.insert(steps, "aerospace focus --window-id " .. focused_wid)
       else
         -- If focused_wid is nil: set layout explicitly (happens when no window was focused)
-        table.insert(steps, "aerospace layout tiles accordion")
+        table.insert(steps, "aerospace layout h_accordion")
       end
 
+      table.insert(steps, "aerospace flatten-workspace-tree")
       table.insert(steps, "sketchybar --trigger space_windows_change")
+      
 
       local aerospace_commands = table.concat(steps, " && ")
       sbar.exec(aerospace_commands, function(_, exit_code)
         if exit_code == 0 then
           logger("[WS_MGR] Layout reset complete. Executed:\n  " ..
-            aerospace_commands:gsub(" && ", "\n  && "))
+            aerospace_commands:gsub(" && ", " && \n "))
         else
           logger("[WS_MGR] Failed (exit=" .. exit_code .. "). Commands:\n  " ..
-            aerospace_commands:gsub(" && ", "\n  && "))
+            aerospace_commands:gsub(" && ", " && \n "))
         end
       end)
     end)
