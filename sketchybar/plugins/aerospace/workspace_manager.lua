@@ -19,21 +19,24 @@ local event_handler = function(env)
         end
       end
 
-      if #steps == 0 then 
-        sbar.exec("aerospace layout h_accordion && aerospace flatten-workspace-tree && sketchybar --trigger space_windows_change")
+      if #steps == 0 then
+        sbar.exec(
+          "aerospace layout h_accordion. && " ..
+          "aerospace flatten-workspace-tree && " ..
+          "sketchybar --trigger space_windows_change")
+        logger("[WS_MGR] No windows to move; performed layout reset only.")
         return
       end
 
       if focused_wid then
         table.insert(steps, "aerospace focus --window-id " .. focused_wid)
       else
-        -- If focused_wid is nil: set layout explicitly (happens when no window was focused)
+        -- Edge case: If focused_wid is nil: set layout explicitly (happens when no window was focused)
         table.insert(steps, "aerospace layout h_accordion")
       end
 
       table.insert(steps, "aerospace flatten-workspace-tree")
       table.insert(steps, "sketchybar --trigger space_windows_change")
-      
 
       local aerospace_commands = table.concat(steps, " && ")
       sbar.exec(aerospace_commands, function(_, exit_code)
