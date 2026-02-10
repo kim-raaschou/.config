@@ -35,12 +35,12 @@ on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_focus_change
 # ============================================================================
 
 [gaps]
-inner.horizontal = 10
-inner.vertical   = 10
-outer.left       = 6
-outer.right      = 6
-outer.bottom     = 6
-outer.top        = [ {monitor."BenQ RD28*" = 42 }, { monitor."Built-in*" = 10}, 70]
+inner.horizontal = [{ monitor."BenQ RD28*" = 16}, 10]
+inner.vertical   = [{ monitor."BenQ RD28*" = 16}, 10]
+outer.left       = [{ monitor."BenQ RD28*" = 8}, 6]
+outer.right      = [{ monitor."BenQ RD28*" = 8}, 6]
+outer.bottom     = [{ monitor."BenQ RD28*" = 8}, 6]
+outer.top        = [{ monitor."BenQ RD28*" = 42 }, { monitor."Built-in*" = 6}, 70]
 
 # ============================================================================
 # WORKSPACE TO MONITOR ASSIGNMENT
@@ -180,6 +180,11 @@ esc   = ['mode main']
 # ============================================================================
 # WINDOW DETECTION RULES
 # ============================================================================
+
+# SMS should float
+[[on-window-detected]]
+if.app-id = 'com.apple.MobileSMS'
+run = ['layout floating']
 
 # Finder windows should float
 [[on-window-detected]]
