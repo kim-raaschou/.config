@@ -12,7 +12,7 @@ sbar.begin_config()
 sbar.exec("borders"
   .. " active_color='" .. theme.border_active .. "'"
   .. " inactive_color='" .. theme.border_inactive .. "'"
-  .. " width=3.5"
+  .. " width=5.0"
   .. " hidpi=off"
   .. " style=round")
 
