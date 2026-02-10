@@ -19,8 +19,7 @@ local function format(command)
   return command:gsub("\n%s+", " ")
 end
 
-local function fetch_workspaces(callback)
-  local workspaces_command = format([[
+local workspaces_command = format([[
     aerospace list-workspaces
       --monitor all
       --json
@@ -30,7 +29,7 @@ local function fetch_workspaces(callback)
         %{monitor-appkit-nsscreen-screens-id}'
   ]])
 
-  local windows_command = format([[
+local windows_command = format([[
     aerospace list-windows
       --all
       --json
@@ -45,14 +44,34 @@ local function fetch_workspaces(callback)
         %{app-bundle-path} '
   ]])
 
-  exec(workspaces_command, function(workspace_data)
-    exec(windows_command, function(window_data)
-      local combined = workspace_data or {}
-      for _, window in ipairs(window_data or {}) do
-        table.insert(combined, window)
-      end
-      callback(combined)
-    end)
+local fetch_workspaces = function(callback)
+  local workspaces, windows = {}, {}
+  local pending = 2
+
+  local function try_complete()
+    pending = pending - 1
+    if pending > 0 then return end
+
+    local data = {}
+    for _, window in ipairs(windows) do
+      table.insert(data, window)
+    end
+
+    for _, ws in ipairs(workspaces) do
+      table.insert(data, ws)
+    end
+
+    callback(data)
+  end
+
+  exec(workspaces_command, function(data)
+    workspaces = data
+    try_complete()
+  end)
+
+  exec(windows_command, function(data)
+    windows = data
+    try_complete()
   end)
 end
 
