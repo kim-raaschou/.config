@@ -20,15 +20,8 @@ local event_handler = function(env)
       end
 
       if #steps == 0 then
-        sbar.exec(
-          "aerospace layout h_accordion. && " ..
-          "aerospace flatten-workspace-tree && " ..
-          "sketchybar --trigger space_windows_change")
-        logger("[WS_MGR] No windows to move; performed layout reset only.")
-        return
-      end
-
-      if focused_wid then
+        table.insert(steps, "aerospace layout h_accordion")
+      elseif focused_wid then
         table.insert(steps, "aerospace focus --window-id " .. focused_wid)
       else
         -- Edge case: If focused_wid is nil: set layout explicitly (happens when no window was focused)
@@ -36,17 +29,18 @@ local event_handler = function(env)
       end
 
       table.insert(steps, "aerospace flatten-workspace-tree")
-      table.insert(steps, "sketchybar --trigger space_windows_change")
 
       local aerospace_commands = table.concat(steps, " && ")
       sbar.exec(aerospace_commands, function(_, exit_code)
-        if exit_code == 0 then
-          logger("[WS_MGR] Layout reset complete. Executed:\n  " ..
-            aerospace_commands:gsub(" && ", " && \n "))
-        else
-          logger("[WS_MGR] Failed (exit=" .. exit_code .. "). Commands:\n  " ..
-            aerospace_commands:gsub(" && ", " && \n "))
-        end
+        sbar.exec("sketchybar --trigger space_windows_change", function()
+          if exit_code == 0 then
+            logger("[WS_MGR] Layout reset complete. Executed:\n  " ..
+              aerospace_commands:gsub(" && ", " && \n "))
+          else
+            logger("[WS_MGR] Failed (exit=" .. exit_code .. "). Commands:\n  " ..
+              aerospace_commands:gsub(" && ", " && \n "))
+          end
+        end)
       end)
     end)
   end)
