@@ -34,7 +34,7 @@ local spotify_song = sbar.add("item", "spotify.song", {
 
 local spotify_cover = sbar.add("item", "spotify.cover", {
   position = "right",
-  padding_left = 2,
+  padding_left = 4,
   padding_right = 0,
   click_script = "open -a Spotify",
   label = { drawing = false },
