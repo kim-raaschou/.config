@@ -3,7 +3,7 @@ local function transform(raw_workspaces)
   local app_entry_count = {}
   local workspace_lookup = {}
 
-  for _, item in pairs(raw_workspaces or {}) do
+  for _, item in ipairs(raw_workspaces or {}) do
     local ws_key = tostring(item.workspace)
 
     if not workspace_lookup[ws_key] then
@@ -48,6 +48,11 @@ local function transform(raw_workspaces)
   for _, ws in ipairs(workspaces) do
     ws.showable = show_all_ws;
   end
+
+  table.sort(workspaces, function(left, right)
+    local lNum, RNum = tonumber(left.id), tonumber(right.id)
+    return (lNum and RNum) and (lNum < RNum) or (tostring(left.id) < tostring(right.id))
+  end)
 
   return workspaces
 end
