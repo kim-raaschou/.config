@@ -8,42 +8,34 @@ local setup = require("plugins.aerospace.setup")
 local update = require("plugins.aerospace.update")
 local cli = require("plugins.aerospace.cli")
 local logger = require("util.logger")
-local create_debounce = require("util.create_debounce")
 
-local debounce = create_debounce()
-
-local on_focus_change = debounce(0.025, function(env)
-  logger("[EVENT] aerospace_focus_change", env)
+local function handle_update(focused_window_id)
   cli.fetch_workspaces(function(raw_workspaces)
     local workspace_data = data_builder.transform(raw_workspaces)
-    update(workspace_data, env.FOCUSED_WINDOW_ID)
+    update(workspace_data, focused_window_id)
   end)
-end)
-
-local on_workspace_change = debounce(0.05, function(env)
-  logger("[EVENT] aerospace_workspace_change", env)
-  cli.fetch_workspaces(function(raw_workspaces)
-    local workspace_data = data_builder.transform(raw_workspaces)
-    update(workspace_data)
-  end)
-end)
-
-local on_windows_change = debounce(0.15, function(env)
-  logger("[EVENT] space_windows_change", env)
-  cli.fetch_workspaces(function(raw_workspaces)
-    local workspace_data = data_builder.transform(raw_workspaces)
-    update(workspace_data)
-  end)
-end)
+end
 
 local function register_event_handlers()
   sbar.add("event", "aerospace_focus_change")
   sbar.add("event", "aerospace_workspace_change")
 
   local event_handler_item = sbar.add("item", "spaces.event_handler", { drawing = false })
-  event_handler_item:subscribe("aerospace_focus_change", on_focus_change)
-  event_handler_item:subscribe("aerospace_workspace_change", on_workspace_change)
-  event_handler_item:subscribe("space_windows_change", on_windows_change)
+
+  event_handler_item:subscribe("aerospace_focus_change", function(env)
+    logger("[EVENT] aerospace_focus_change", env)
+    handle_update(env.FOCUSED_WINDOW_ID)
+  end)
+
+  event_handler_item:subscribe("aerospace_workspace_change", function(env)
+    logger("[EVENT] aerospace_workspace_change", env)
+    handle_update()
+  end)
+
+  event_handler_item:subscribe("space_windows_change", function(env)
+    logger("[EVENT] space_windows_change", env)
+    handle_update()
+  end)
 end
 
 cli.fetch_workspaces(function(raw_workspaces)

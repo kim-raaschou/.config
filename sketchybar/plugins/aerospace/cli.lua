@@ -44,7 +44,7 @@ local windows_command = format([[
         %{app-bundle-path} '
   ]])
 
-local fetch_workspaces = function(callback)
+local function fetch_workspaces(callback)
   local workspaces, windows = {}, {}
   local pending = 2
 
@@ -53,12 +53,12 @@ local fetch_workspaces = function(callback)
     if pending > 0 then return end
 
     local data = {}
-    for _, window in ipairs(windows) do
+    for _, window in ipairs(windows or {}) do
       table.insert(data, window)
     end
 
-    for _, ws in ipairs(workspaces) do
-      table.insert(data, ws)
+    for _, workspace in ipairs(workspaces or {}) do
+      table.insert(data, workspace)
     end
 
     callback(data)
