@@ -1,17 +1,18 @@
-local logger = require("util.logger")
-
 local theme = {}
 
 function theme.load(name)
-  name = name or "tokyodark"
+  local t = require("themes." .. (name or "tokyodark"))
 
-  local loaded_theme = require("themes." .. name)
-
-  for k, v in pairs(loaded_theme) do
+  for k, v in pairs(t) do
     theme[k] = v
   end
 
-  logger("[THEME] ✅ Loaded theme:", name)
+  theme.transparent = "0x00000000"
+  theme.workspace_focused = theme.accent
+  theme.app_border_focused = theme.accent
+  theme.mode_main = theme.workspace_with_apps
+  theme.mode_active = theme.accent
+  theme.border_active = theme.accent
 end
 
 return theme
