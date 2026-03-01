@@ -42,7 +42,7 @@ local spotify_cover = sbar.add("item", "spotify.cover", {
     background = {
       drawing = true,
       image   = {
-        scale = 0.32,
+        scale = 0.46,
         corner_radius = 7
       }
     }
@@ -56,11 +56,9 @@ local spotify_bracket = sbar.add("bracket", "spotify.bracket", {
 }, {
   drawing = false,
   background = {
-    height = 28,
-    color = theme.workspace_bg,
-    border_color = theme.border_inactive,
-    border_width = 1,
-    corner_radius = 7,
+    height = 32,
+    color = theme.bar_bg,
+    corner_radius = 7
   }
 })
 
@@ -84,16 +82,7 @@ local function spotify_event_from(env)
       track_id = (env.INFO["Track ID"] or ""):match("track:(.+)$"),
       track_name = env.INFO["Name"],
       artist = env.INFO["Artist"],
-      album = env.INFO["Album"],
-      album_artist = env.INFO["Album Artist"],
-      track_number = env.INFO["Track Number"],
-      disc_number = env.INFO["Disc Number"],
-      has_artwork = env.INFO["Has Artwork"],
       player_state = env.INFO["Player State"],
-      duration = env.INFO["Duration"],
-      playback_position = env.INFO["Playback Position"],
-      play_count = env.INFO["Play Count"],
-      popularity = env.INFO["Popularity"]
     }
   end
 
@@ -142,7 +131,6 @@ end
 sbar.add("event", "spotify_change", "com.spotify.client.PlaybackStateChanged")
 
 local spotify_subscription = sbar.add("item", "spotify.subscription", {
-  update_freq = 2,
   drawing = false
 })
 
@@ -191,22 +179,6 @@ spotify_subscription:subscribe("spotify_change", function(env)
     })
   end)
 end)
-
---spotify_subscription:subscribe("routine", function()
-  -- if current_spotify_event == nil then return end
-
-  -- sbar.exec("pgrep -x Spotify", function(_, exit_code)
-    -- local spotify_is_running = exit_code == 0
-    -- if not spotify_is_running then
-      -- spotify_bracket:set({ drawing = false })
-      -- spotify_cover:set({ drawing = false })
-      -- spotify_song:set({ drawing = false })
-      -- spotify_artist:set({ drawing = false })
-      -- -- Reset state when Spotify quits
-      -- current_spotify_event = nil
-    -- end
-  -- end)
---end)
 
 sbar.exec("mkdir -p '" .. SPOTIFY_ARTWORK_CACHE_DIR .. "'")
 
