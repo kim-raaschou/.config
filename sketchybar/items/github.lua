@@ -26,23 +26,10 @@ local github = sbar.add("item", "github", {
 github:subscribe("routine", function()
     sbar.exec(GITHUB_NOTIFICATIONS_COUNT, function(count)
         logger("[GITHUB] Unread notifications count: " .. count)
-        count = tonumber(count or "0")
-
-        local update_freq
-        if count <= 5 then
-            update_freq = 30
-        elseif count <= 20 then
-            update_freq = 120
-        elseif count <= 50 then
-            update_freq = 240
-        else
-            update_freq = 480
-        end
-
         sbar.animate("sin", 30, function()
             github:set({
-                update_freq = update_freq,
-                icon = { color = count > 0 and theme.accent or nil }
+                update_freq = 10,
+                icon = { color = tonumber(count or "0") > 0 and theme.accent or nil }
             })
         end)
     end)
