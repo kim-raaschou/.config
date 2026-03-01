@@ -1,6 +1,7 @@
 # ============================================================================
 # GLOBAL SETTINGS
 # ============================================================================
+
 start-at-login = true
 
 automatically-unhide-macos-hidden-apps = true
@@ -29,26 +30,39 @@ on-mode-changed = ['exec-and-forget sketchybar --trigger aerospace_mode_change M
 on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_focus_change FOCUSED_WINDOW_ID=$AEROSPACE_WINDOW_ID']
 
 # ============================================================================
+# MenuBar CONFIGURATION
+# ============================================================================
+[menu-bar]
+    style = 'appIcons'
+    max-apps-per-workspace = 3
+    show-empty-workspaces = true
+    mode = 'always'
+
+# ============================================================================
 # GAPS CONFIGURATION
 # ============================================================================
+
 [gaps]
-inner.horizontal = [{ monitor."BenQ RD28*" = 16}, 12]
-inner.vertical   = [{ monitor."BenQ RD28*" = 16}, 12]
-outer.left       = [{ monitor."BenQ RD28*" = 8}, 6]
-outer.right      = [{ monitor."BenQ RD28*" = 8}, 6]
+inner.horizontal = [{ monitor."BenQ RD28*" = 16}, 10]
+inner.vertical   = [{ monitor."BenQ RD28*" = 16}, 10]
+outer.left       = [{ monitor."BenQ RD28*" = 16}, 6]
+outer.right      = [{ monitor."BenQ RD28*" = 16}, 6]
 outer.bottom     = [{ monitor."BenQ RD28*" = 16}, 6]
-outer.top        = [{ monitor."BenQ RD28*" = 52}, { monitor."Built-in*" = 18}, 70]
+outer.top        = [{ monitor."BenQ RD28*" = 50 }, { monitor."Built-in*" = 6}, 70]
 
 # ============================================================================
 # WORKSPACE TO MONITOR ASSIGNMENT
 # ============================================================================
+
 [workspace-to-monitor-force-assignment]
 4 = ['secondary', 'main']
 5 = ['secondary', 'main']
 
+
 # ============================================================================
 # MAIN MODE BINDINGS
 # ============================================================================
+
 [mode.main.binding]
 
 # Disable default macOS shortcuts
@@ -58,7 +72,6 @@ cmd-tab = []    # Disable default cmd-tab
 # Mode switching
 cmd-ctrl-alt-w = ['mode window']
 cmd-ctrl-alt-a = ['mode apps']
-cmd-ctrl-alt-l = ['mode layout']
 
 # Layout toggle
 cmd-ctrl-alt-enter = ['layout tiling accordion', 'mode main']
@@ -86,17 +99,11 @@ cmd-ctrl-alt-shift-3 = ['move-node-to-workspace 3 --focus-follows-window']
 cmd-ctrl-alt-shift-4 = ['move-node-to-workspace 4 --focus-follows-window']
 cmd-ctrl-alt-shift-5 = ['move-node-to-workspace 5 --focus-follows-window']
 
-# ============================================================================
-# LAYOUT MODE BINDINGS
-# ============================================================================
-[mode.layout.binding]
-t = ['layout tiling', 'mode main']
-f = ['layout floating', 'mode main']
-r = ['exec-and-forget ~/.config/aerospace/reset.sh', 'mode main']
 
 # ============================================================================
 # WINDOW MODE BINDINGS
 # ============================================================================
+
 [mode.window.binding]
 
 # Move windows
@@ -125,47 +132,54 @@ shift-down  = ['resize height -75']
 
 # Utilities
 f = ['exec-and-forget sketchybar --trigger aerospace_reset_layout TARGET_WS=1', 'mode main']
-q = ['reload-config', 'mode main']
+q = [
+    'exec-and-forget killall borders',
+    'exec-and-forget brew services restart felixkratz/formulae/sketchybar',
+    'reload-config',
+    'mode main'
+]
 
 # Exit window mode
 esc   = ['mode main']
 
+
 # ============================================================================
 # APPS MODE BINDINGS
 # ============================================================================
+
 [mode.apps.binding]
 
 # Browsers
-a = ['exec-and-forget open /Applications/Arc.app', 'mode main']
-#qaa = ['exec-and-forget open /Applications/Vivaldi.app', 'mode main']
-b = ['exec-and-forget open /Applications/Brave\ Browser.app', 'mode main']
-z = ['exec-and-forget open /Applications/Zen.app', 'mode main']
+a = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Arc.app', 'mode main']
+#qaa = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Vivaldi.app', 'mode main']
+b = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Brave\ Browser.app', 'mode main']
+z = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Zen.app', 'mode main']
 
 # Development tools
-d = ['exec-and-forget open ~/Applications/IntelliJ\ IDEA.app', 'mode main']
+d = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=~/Applications/IntelliJ\ IDEA.app', 'mode main']
 j = ["exec-and-forget osascript -e 'tell application id \"net.java.openjdk.java\" to activate'"]
-p = ['exec-and-forget open /Applications/Postman.app', 'mode main']
-v = ['exec-and-forget open /Applications/Visual\ Studio\ Code.app', 'mode main']
-w = ['exec-and-forget open /Applications/Warp.app', 'mode main']
+p = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Postman.app', 'mode main']
+v = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Visual\ Studio\ Code.app', 'mode main']
+w = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Warp.app', 'mode main']
 
 # Communication
-g = ['exec-and-forget open /Applications/ChatGPT.app', 'mode main']
-m = ['exec-and-forget open /Applications/Notion\ Mail.app', 'mode main']
-t = ['exec-and-forget open /Applications/Microsoft\ Teams.app', 'mode main']
+g = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/ChatGPT.app', 'mode main']
+m = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Notion\ Mail.app', 'mode main']
+t = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Microsoft\ Teams.app', 'mode main']
 
 # Productivity
-c = ['exec-and-forget open /Applications/Notion\ Calendar.app', 'mode main']
-e = ['exec-and-forget open /Applications/Microsoft\ Excel.app', 'mode main']
+c = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Notion\ Calendar.app', 'mode main']
+e = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Microsoft\ Excel.app', 'mode main']
 
 # System & utilities
-f = ['exec-and-forget open /System/Library/CoreServices/Finder.app', 'mode main']
+f = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/System/Library/CoreServices/Finder.app', 'mode main']
 i = ['exec-and-forget open -b com.apple.systempreferences', 'mode main']
-s = ['exec-and-forget open /Applications/Spotify.app', 'mode main']
+s = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/Applications/Spotify.app', 'mode main']
 
 # Quick links
 f10 = ['exec-and-forget open https://github.com/festina-advisor/advisor/issues?q=is:open+is:pr+author:@me', 'mode main']
 f11 = ['exec-and-forget open https://github.com/notifications?query=is:unread', 'mode main']
-f12 = ['exec-and-forget open /System/Applications/Messages.app', 'mode main']
+f12 = ['exec-and-forget sketchybar --trigger aerospace_app_open APP_PATH=/System/Applications/Messages.app', 'mode main']
 
 # Exit apps mode
 esc   = ['mode main']
@@ -176,9 +190,9 @@ esc   = ['mode main']
 # ============================================================================
 
 # SMS should float
-#[[on-window-detected]]
-#if.app-id = 'com.apple.MobileSMS'
-#run = ['layout floating']
+[[on-window-detected]]
+if.app-id = 'com.apple.MobileSMS'
+run = ['layout floating']
 
 # Finder windows should float
 [[on-window-detected]]
