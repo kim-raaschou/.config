@@ -11,19 +11,24 @@
 - **Naming:** snake_case for functions/variables, SCREAMING_SNAKE for constants
 - **State:** Immutable pattern - never modify passed state, create new tables
 - **Error handling:** Check CLI exit codes, use `callback(nil)` for errors
-- **Async:** Use pipeline.lua for parallel operations, avoid nested callbacks
-- **Performance:** fetchAll() supports workspace filtering for partial updates
-- **Events:** 3 types - `aerospace_workspace_change` (partial fetch), `aerospace_focus_change` (no fetch), `space_windows_change` (full fetch with 100ms delay
-- **Render:** Pre-create 10 app slots per workspace, toggle `drawing = true/false` to show/hide
-- **Logging:** Toggle via `spaces/logger.lua` ENABLED flag, uses JSON encoding for tables
-- **Architecture:** Separate concerns - CLI (aerospace_cli.lua), State (aerospace_state.lua), Render (aerospace_update.lua + aerospace_init.lua)
+- **Async:** Parallel CLI calls in cli.lua, avoid nested callbacks
+- **Performance:** Pre-create 10 app slots per workspace, toggle `drawing = true/false` to show/hide
+- **Events:** 3 types - `aerospace_workspace_change`, `aerospace_focus_change`, `space_windows_change`
+- **Logging:** Toggle via `util/logger.lua` ENABLED flag, uses JSON encoding for tables
+- **Architecture:** Separate concerns - CLI (cli.lua), Data (data.lua), Render (update.lua + setup.lua)
 
 ## Key Files
-- `spaces/init.lua` - Event handlers and state management
-- `spaces/aerospace_state.lua` - Fetches and processes AeroSpace data
-- `spaces/aerospace_update.lua` - Updates existing items (runtime)
-- `spaces/aerospace_init.lua` - Creates initial items (startup)
-- `spaces/aerospace_cli.lua` - AeroSpace CLI wrapper with workspace filtering
+- `plugins/aerospace/init.lua` - Event handlers and bootstrap
+- `plugins/aerospace/cli.lua` - AeroSpace CLI wrapper (parallel workspace + window fetch)
+- `plugins/aerospace/data.lua` - Transforms raw AeroSpace data into workspace model
+- `plugins/aerospace/setup.lua` - Creates initial sketchybar items (startup)
+- `plugins/aerospace/update.lua` - Updates existing items (runtime)
+- `plugins/aerospace/mode.lua` - AeroSpace mode indicator (main/apps/window)
+- `plugins/aerospace/app_open.lua` - Smart app opener (focus/open/Raycast)
+- `plugins/aerospace/workspace_manager.lua` - Moves all windows to target workspace
+- `items/github.lua` - GitHub notification badge
+- `items/spotify.lua` - Spotify now-playing widget with cover art
+- `util/logger.lua` - JSON-capable logger with enable/disable toggle
 
 ## KODE
 DO not just begin to update/write code that not has ben approved.
