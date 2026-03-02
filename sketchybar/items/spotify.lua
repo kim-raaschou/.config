@@ -1,6 +1,7 @@
 local sbar = require("sketchybar")
 local theme = require("theme")
 local logger = require("util.logger")
+local globals = require("globals")
 
 local SPOTIFY_ARTWORK_CACHE_DIR = os.getenv("HOME") .. "/.cache/sketchybar/spotify"
 
@@ -56,7 +57,7 @@ local spotify_bracket = sbar.add("bracket", "spotify.bracket", {
 }, {
   drawing = false,
   background = {
-    height = 32,
+    height = globals.ITEM_HEIGHT,
     color = theme.bar_bg,
     corner_radius = 7
   }

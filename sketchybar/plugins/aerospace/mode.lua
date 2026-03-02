@@ -1,6 +1,7 @@
-local logger = require("util.logger")
-local sbar   = require("sketchybar")
-local theme  = require("theme")
+local logger  = require("util.logger")
+local sbar    = require("sketchybar")
+local theme   = require("theme")
+local globals = require("globals")
 
 sbar.add("event", "aerospace_mode_change")
 
@@ -14,12 +15,12 @@ local event_handler_item = sbar.add("item", "space.mode.event_handler", {
   label = {
     string = modes["main"],
     color = theme.mode_main,
-    width = 28,
+    -- width = 28,
     y_offset = 1,
     font = {
       family = "SF Pro",
       style = "Semibold",
-      size = 18.0
+      size = globals.WS_FONT_SIZE
     }
   },
 })

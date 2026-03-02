@@ -1,5 +1,6 @@
 local sbar = require("sketchybar")
 local theme = require("theme")
+local globals = require("globals")
 
 local MAX_APPS_PER_WORKSPACE = 10
 
@@ -11,17 +12,16 @@ return function (workspace_data)
       label = {
         align = "center",
         string = tostring(ws.id),
-        width = 28,
+        width = globals.WS_WIDTH,
         font = {
-          family = "SF Pro",
-          style = "Semibold",
-          size = 18.0
+          style = "bold",
+          size = globals.WS_FONT_SIZE
         },
         background = {
           drawing = false,
           height = 3,
           color = theme.accent,
-          y_offset = -15,
+          y_offset = globals.ITEM_OFFSET,
           corner_radius = 3
         },
       },
@@ -30,7 +30,7 @@ return function (workspace_data)
         corner_radius = 3,
         drawing = true,
         color = theme.workspace_bg,
-        height = 32
+        height = globals.ITEM_HEIGHT
       },
       click_script = "aerospace workspace " .. ws.id
     })
@@ -40,14 +40,15 @@ return function (workspace_data)
         drawing = false,
         label = {
           color = theme.accent,
-          y_offset = -10,
-          padding_left = -10,
-          font = { size = 8 },
+          y_offset = -8,
+          padding_left = -6,
+          font = { size = 6 },
         },
         icon = {
           background = {
             drawing = true,
             image = {
+              scale = globals.APP_ICON_SCALE,
               border_width = 1,
               corner_radius = 7,
             }
