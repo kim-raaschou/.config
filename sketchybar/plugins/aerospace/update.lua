@@ -13,18 +13,22 @@ return function(workspace_data, focused_window_id)
   for _, ws in ipairs(workspace_data) do
     local ws_prefix = "space." .. ws.id
 
-    sbar.set(ws_prefix, {
-      drawing = true,
-      display = ws.display,
-      label = {
-        color = ws.focused and theme.workspace_focused or
-            (#ws.apps > 0 and theme.workspace_with_apps or theme.workspace_empty),
-        background = { drawing = ws.focused },
-      },
-      background = {
-        drawing = ws.focused,
-      },
-    })
+    if ws.focused == false and #ws.apps == 0 then
+      sbar.set(ws_prefix, { drawing = false })
+    else
+      sbar.set(ws_prefix, {
+        drawing = true,
+        display = ws.display,
+        label = {
+          color = ws.focused and theme.workspace_focused or
+              (#ws.apps > 0 and theme.workspace_with_apps or theme.workspace_empty),
+          background = { drawing = ws.focused },
+        },
+        background = {
+          drawing = ws.focused,
+        },
+      })
+    end
 
     local app_index = 0
 
@@ -35,7 +39,10 @@ return function(workspace_data, focused_window_id)
         drawing = true,
         display = ws.display,
         click_script = "aerospace focus --window-id " .. app.window_id,
-        label = { string = app.count > 1 and "􀕩" or "" },
+        label = {
+          drawing = app.count > 1,
+          string = "􀕩"
+        },
         icon = {
           background = {
             drawing = true,
