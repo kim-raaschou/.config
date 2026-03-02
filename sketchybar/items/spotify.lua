@@ -3,38 +3,45 @@ local theme = require("theme")
 local logger = require("util.logger")
 local globals = require("globals")
 
-local SPOTIFY_ARTWORK_CACHE_DIR = os.getenv("HOME") .. "/.cache/sketchybar/spotify"
+local SLIDER_WIDTH = 150
+local FONT_SIZE = math.floor(globals.BAR_HEIGHT * 0.4)
+local MAX_CHARS = math.floor(SLIDER_WIDTH / (FONT_SIZE * 0.50)) -- overshoot: label.width clips visually
+local CACHE_DIR = os.getenv("HOME") .. "/.cache/sketchybar/spotify"
+local current_event = nil
 
-local current_spotify_event = nil
-
-local spotify_artist = sbar.add("item", "spotify.artist", {
+local progress = sbar.add("slider", "spotify.progress", SLIDER_WIDTH, {
   position = "right",
   width = 0,
-  click_script = "open -a Spotify",
+  y_offset = -8,
+  drawing = false,
+  update_freq = 0,
   icon = { drawing = false },
-  label = {
-    width = 120,
-    align = "left",
-    font = { size = 8.0 },
-    color = theme.workspace_with_apps,
-    y_offset = -8,
-  }
+  label = { drawing = false },
+  slider = {
+    highlight_color = theme.accent,
+    percentage = 0,
+    background = { height = 3, corner_radius = 2, color = theme.bar_bg },
+  },
 })
 
-local spotify_song = sbar.add("item", "spotify.song", {
+local text = sbar.add("item", "spotify.text", {
   position = "right",
+  drawing = false,
+  scroll_texts = true,
   click_script = "open -a Spotify",
   icon = { drawing = false },
   label = {
-    width = 120,
+    width = SLIDER_WIDTH,
     align = "left",
-    font = { size = 13.0 },
     y_offset = 4,
-  }
+    scroll_duration = 200,
+    font = { size = FONT_SIZE },
+  },
 })
 
-local spotify_cover = sbar.add("item", "spotify.cover", {
+local cover = sbar.add("item", "spotify.cover", {
   position = "right",
+  drawing = false,
   padding_left = 4,
   padding_right = 0,
   click_script = "open -a Spotify",
@@ -42,145 +49,95 @@ local spotify_cover = sbar.add("item", "spotify.cover", {
   icon = {
     background = {
       drawing = true,
-      image   = {
-        scale = 0.46,
-        corner_radius = 7
-      }
+      image = { scale = globals.ITEM_HEIGHT / 64, corner_radius = 4 },
     }
-  }
+  },
 })
 
-local spotify_bracket = sbar.add("bracket", "spotify.bracket", {
-  spotify_cover.name,
-  spotify_artist.name,
-  spotify_song.name,
-}, {
-  drawing = false,
-  background = {
-    height = globals.ITEM_HEIGHT,
-    color = theme.bar_bg,
-    corner_radius = 7
-  }
-})
-
-local function truncate_string(str, max_length)
-  if not str or #str <= max_length then return str or "" end
-  return str:sub(1, max_length - 1) .. "…"
-end
-
-local function escape_quotes(str)
-  if not str then return "" end
-  return str:gsub("'", "'\\''")
-end
-
-local function trim(str)
-  return str:match("^%s*(.-)%s*$")
-end
-
-local function spotify_event_from(env)
-  if env and env.INFO then
-    return {
-      track_id = (env.INFO["Track ID"] or ""):match("track:(.+)$"),
-      track_name = env.INFO["Name"],
-      artist = env.INFO["Artist"],
-      player_state = env.INFO["Player State"],
-    }
-  end
-
-  return {}
-end
-
-local function fetch_cover_artwork(track_id, callback)
-  if not track_id or track_id == "" then return end
-
-  local cache_path = SPOTIFY_ARTWORK_CACHE_DIR .. "/" .. track_id .. ".jpg"
-  local cache_file = io.open(cache_path, "r")
-
-  if cache_file then
-    cache_file:close()
-    callback(cache_path)
-    return
-  end
-
-  local SPOTIFY_ARTWORK_SCRIPT = [[
-  if application "Spotify" is running then
-    tell application "Spotify"
-      if player state is playing or player state is paused then
-        return artwork url of current track
-      end if
-    end tell
-  end if
-  return ""]]
-
-  sbar.exec("osascript -e '" .. SPOTIFY_ARTWORK_SCRIPT .. "'", function(artwork_url)
-    artwork_url = trim(artwork_url or "")
-    if artwork_url == "" then return end
-
-    local SPOTIFY_URL_LARGE = "0000b273"
-    local SPOTIFY_URL_SMALL = "00004851"
-    local small_url = artwork_url:gsub(SPOTIFY_URL_LARGE, SPOTIFY_URL_SMALL)
-    local download_cmd = string.format("curl -s '%s' -o '%s'", escape_quotes(small_url), escape_quotes(cache_path))
-
-    sbar.exec(download_cmd, function(_, exit_code)
-      if exit_code == 0 then
-        callback(cache_path)
-      end
-    end)
-  end)
-end
-
-sbar.add("event", "spotify_change", "com.spotify.client.PlaybackStateChanged")
-
-local spotify_subscription = sbar.add("item", "spotify.subscription", {
-  drawing = false
-})
-
-spotify_subscription:subscribe("spotify_change", function(env)
-  logger("Spotify event received", env)
-  local spotify_event = spotify_event_from(env)
-
-  if spotify_event.player_state == "Stopped" then
-    spotify_bracket:set({ drawing = false })
-    spotify_cover:set({ drawing = false })
-    spotify_song:set({ drawing = false })
-    spotify_artist:set({ drawing = false })
-    current_spotify_event = nil
-    return
-  end
-
-  local border_color = spotify_event.player_state == "Playing"
-      and theme.border_active
-      or theme.border_inactive
-
-  spotify_bracket:set({
-    drawing = true,
-    background = { border_color = border_color }
-  })
-
-  if current_spotify_event and current_spotify_event.track_id == spotify_event.track_id then
-    current_spotify_event = spotify_event
-    return
-  end
-
-  current_spotify_event = spotify_event
-
-  spotify_song:set({
-    drawing = true,
-    label = { string = truncate_string(spotify_event.track_name, 14) }
-  })
-  spotify_artist:set({
-    drawing = true,
-    label = { string = truncate_string(spotify_event.artist, 20) }
-  })
-
-  fetch_cover_artwork(spotify_event.track_id, function(image_path)
-    spotify_cover:set({
-      drawing = true,
-      icon = { background = { image = { string = image_path } } }
-    })
+progress:subscribe("routine", function()
+  local script = [[osascript -e 'if application "Spotify" is running then
+    tell application "Spotify" to if player state is playing then
+      set pos to player position
+      set dur to (duration of current track) / 1000
+      return (round pos rounding down) as text & ":" & (round dur rounding down) as text
+    end if
+  end if']]
+  sbar.exec(script, function(result)
+    local pos, dur = (result or ""):match("^%s*(%d+):(%d+)%s*$")
+    if not pos or dur == "0" then return end
+    progress:set({ slider = { percentage = math.floor(math.min(100, tonumber(pos) / tonumber(dur) * 100)) } })
   end)
 end)
 
-sbar.exec("mkdir -p '" .. SPOTIFY_ARTWORK_CACHE_DIR .. "'")
+local function fetch_cover(track_id, callback)
+  if not track_id or track_id == "" then return end
 
-return { cover = spotify_cover, song = spotify_song, artist = spotify_artist }
+  local path = CACHE_DIR .. "/" .. track_id .. ".jpg"
+  local f = io.open(path, "r")
+  if f then
+    f:close(); return callback(path)
+  end
+
+  local script = [[if application "Spotify" is running then
+    tell application "Spotify" to if player state is not stopped then return artwork url of current track
+  end if]]
+  sbar.exec("osascript -e '" .. script .. "'", function(url)
+    url = (url or ""):match("^%s*(.-)%s*$")
+    if url == "" then return end
+    local cmd = string.format("curl -s '%s' -o '%s'", url:gsub("0000b273", "00004851"), path:gsub("'", "'\\''"))
+    sbar.exec(cmd, function(_, code) if code == 0 then callback(path) end end)
+  end)
+end
+
+local function set_drawing(visible)
+  cover:set({ drawing = visible })
+  text:set({ drawing = visible })
+  progress:set({ drawing = visible })
+end
+
+local state_handlers = {
+  stopped = function()
+    set_drawing(false); current_event = nil
+  end,
+  paused  = function()
+    set_drawing(true); progress:set({ update_freq = 0 })
+  end,
+  playing = function()
+    set_drawing(true); progress:set({ update_freq = 1 })
+  end,
+}
+
+sbar.add("event", "spotify_change", "com.spotify.client.PlaybackStateChanged")
+
+sbar.add("item", "spotify.sub", { drawing = false }):subscribe("spotify_change", function(env)
+  logger("Spotify event received", env)
+  local info = env and env.INFO or {}
+  local event = {
+    track_id = (info["Track ID"] or ""):match("track:(.+)$"),
+    track_name = info["Name"],
+    artist = info["Artist"],
+    state = (info["Player State"] or ""):lower(),
+  }
+
+  local handler = state_handlers[event.state]
+  if handler then handler() end
+  if event.state == "stopped" then return end
+
+  if current_event and current_event.track_id == event.track_id then
+    current_event = event
+    return
+  end
+  current_event = event
+
+  progress:set({ slider = { percentage = 0 } })
+  local label = (event.track_name or "") .. " - " .. (event.artist or "")
+  text:set({ label = { string = label, max_chars = MAX_CHARS } })
+
+  fetch_cover(event.track_id, function(img)
+    cover:set({ icon = { background = { image = { string = img } } } })
+  end)
+end)
+
+sbar.exec("mkdir -p '" .. CACHE_DIR .. "'")
+
+return { cover = cover, text = text, progress = progress }
