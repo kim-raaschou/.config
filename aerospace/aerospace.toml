@@ -34,10 +34,10 @@ on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_focus_change
 [gaps]
 inner.horizontal = [{ monitor."BenQ RD28*" = 16}, 12]
 inner.vertical   = [{ monitor."BenQ RD28*" = 16}, 12]
-outer.left       = [{ monitor."BenQ RD28*" = 8}, 6]
-outer.right      = [{ monitor."BenQ RD28*" = 8}, 6]
-outer.bottom     = [{ monitor."BenQ RD28*" = 4}, 6]
-outer.top        = [{ monitor."BenQ RD28*" = 38}, { monitor."Built-in*" = 6}, 70]
+outer.left       = [{ monitor."BenQ RD28*" = 2}, 6]
+outer.right      = [{ monitor."BenQ RD28*" = 2}, 6]
+outer.bottom     = [{ monitor."BenQ RD28*" = 2}, 6]
+outer.top        = [{ monitor."BenQ RD28*" = 34}, { monitor."Built-in*" = 6}, 70]
 
 # ============================================================================
 # WORKSPACE TO MONITOR ASSIGNMENT
@@ -61,7 +61,7 @@ cmd-ctrl-alt-a = ['mode apps']
 cmd-ctrl-alt-l = ['mode layout']
 
 # Layout toggle
-cmd-ctrl-alt-enter = ['layout tiling accordion', 'mode main']
+cmd-ctrl-alt-enter = ['layout h_tiles h_accordion', 'mode main']
 
 # Focus navigation (wrap around workspace boundaries)
 
@@ -93,6 +93,7 @@ cmd-ctrl-alt-shift-5 = ['move-node-to-workspace 5 --focus-follows-window']
 t = ['layout tiling', 'mode main']
 f = ['layout floating', 'mode main']
 r = ['exec-and-forget ~/.config/aerospace/reset.sh', 'mode main']
+esc   = ['mode main']
 
 # ============================================================================
 # WINDOW MODE BINDINGS

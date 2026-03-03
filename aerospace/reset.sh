@@ -19,3 +19,6 @@ aerospace workspace 1
 if [[ -n "$focused_win_id" ]]; then
   aerospace focus --window-id "$focused_win_id"
 fi
+
+
+aerospace flatten-workspace-tree --workspace 1
