@@ -4,15 +4,13 @@ require("plugins.aerospace.workspace_manager")
 
 local sbar = require("sketchybar")
 local data_builder = require("plugins.aerospace.data")
-local setup = require("plugins.aerospace.setup")
-local update = require("plugins.aerospace.update")
+local workspace = require("plugins.aerospace.workspace")
 local cli = require("plugins.aerospace.cli")
 local logger = require("util.logger")
 
 local function handle_update(focused_window_id)
   cli.fetch_workspaces(function(raw_workspaces)
-    local workspace_data = data_builder.transform(raw_workspaces)
-    update(workspace_data, focused_window_id)
+    workspace(data_builder.transform(raw_workspaces), focused_window_id)
   end)
 end
 
@@ -33,17 +31,17 @@ local function register_event_handlers()
   end)
 
   event_handler_item:subscribe("space_windows_change", function(env)
-    logger("[EVENT] space_windows_change", env)
-    handle_update()
+    -- wait for windows to settle before querying aerospace
+    sbar.exec("sleep 0.20", function()
+      logger("[EVENT] space_windows_change (debounced)", env)
+      handle_update()
+    end)
   end)
 end
 
 cli.fetch_workspaces(function(raw_workspaces)
   local workspace_data = data_builder.transform(raw_workspaces)
-
   logger("[INIT] initial data:", workspace_data)
-
-  setup(workspace_data)
-  update(workspace_data)
+  workspace(workspace_data)
   register_event_handlers()
 end)
