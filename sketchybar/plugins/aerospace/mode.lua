@@ -9,32 +9,30 @@ local modes = {
   ["apps"] = "􀀄",
   ["main"] = "􀀜",
   ["window"] = "􀀰",
+  ["layout"] = "􀀚"
 }
 
-local event_handler_item = sbar.add("item", "space.mode.event_handler", {
+local mode_item = sbar.add("item", "space.mode.event_handler", {
   label = {
     string = modes["main"],
     color = theme.mode_main,
-    -- width = 28,
     y_offset = 1,
     font = {
       family = "SF Pro",
-      style = "Semibold",
+      style = "Bold",
       size = globals.WS_FONT_SIZE
     }
   },
 })
 
-local function on_mode_change(env)
+mode_item:subscribe("aerospace_mode_change", function(env)
   logger("[EVENT] aerospace_mode_changed", env)
 
   local mode = env.MODE or "main"
-  event_handler_item:set({
+  mode_item:set({
     label = {
-      string = modes[mode],
+      string = modes[mode] or string.upper(string.sub(mode, 1, 1)),
       color = mode == "main" and theme.mode_main or theme.mode_active,
     }
   })
-end
-
-event_handler_item:subscribe("aerospace_mode_change", on_mode_change)
+end)
