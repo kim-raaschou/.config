@@ -1,6 +1,6 @@
 return {
   accent = "0xFF7199EE",
-  bar_bg = "0xFF1A1B2A",
+  bar_bg = "0xAA1A1B2A",
   workspace_bg = "0xFF212234",
   workspace_with_apps = "0xFFA0A8CD",
   workspace_empty = "0xFF6B7380",
