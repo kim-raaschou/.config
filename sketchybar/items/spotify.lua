@@ -12,7 +12,7 @@ local current_event = nil
 local progress = sbar.add("slider", "spotify.progress", SLIDER_WIDTH, {
   position = "right",
   width = 0,
-  y_offset = -8,
+  y_offset = -math.floor(globals.ITEM_HEIGHT * 0.36),
   drawing = false,
   update_freq = 0,
   icon = { drawing = false },
@@ -33,7 +33,7 @@ local text = sbar.add("item", "spotify.text", {
   label = {
     width = SLIDER_WIDTH,
     align = "left",
-    y_offset = 4,
+    y_offset = math.floor(globals.ITEM_HEIGHT * 0.2),
     scroll_duration = 200,
     font = { size = FONT_SIZE },
   },
@@ -42,14 +42,14 @@ local text = sbar.add("item", "spotify.text", {
 local cover = sbar.add("item", "spotify.cover", {
   position = "right",
   drawing = false,
-  padding_left = 4,
+  padding_left = globals.PADDING,
   padding_right = 0,
   click_script = "open -a Spotify",
   label = { drawing = false },
   icon = {
     background = {
       drawing = true,
-      image = { scale = globals.ITEM_HEIGHT / 64, corner_radius = 4 },
+      image = { scale = globals.ITEM_HEIGHT / 72, corner_radius = 4 },
     }
   },
 })

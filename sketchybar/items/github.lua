@@ -1,6 +1,7 @@
 local sbar = require("sketchybar")
 local theme = require("theme")
 local logger = require("util.logger")
+local globals = require("globals")
 
 local GITHUB_NOTIFICATIONS_COUNT = "GH_TOKEN=$(gh auth token --user krn_festina) " ..
     "gh api notifications " ..
@@ -14,13 +15,12 @@ local github = sbar.add("item", "github", {
     icon = {
         drawing = true,
         string = "",
-        padding_left = 8,
-        padding_right = 8,
-        font = { size = 26.0 }
+        padding_left = globals.PADDING,
+        padding_right = globals.PADDING,
+        font = { size = math.floor(globals.BAR_HEIGHT * 0.8) },
     },
-    y_offset = 2,
     label = { drawing = false },
-    background = { drawing = false }
+    background = { drawing = false },
 })
 
 github:subscribe("routine", function()
