@@ -34,10 +34,10 @@ on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_focus_change
 [gaps]
 inner.horizontal = [{ monitor."BenQ RD28*" = 16}, 12]
 inner.vertical   = [{ monitor."BenQ RD28*" = 16}, 12]
-outer.left       = [{ monitor."BenQ RD28*" = 2}, 6]
-outer.right      = [{ monitor."BenQ RD28*" = 2}, 6]
+outer.left       = [{ monitor."BenQ RD28*" = 8}, 6]
+outer.right      = [{ monitor."BenQ RD28*" = 8}, 6]
 outer.bottom     = [{ monitor."BenQ RD28*" = 2}, 6]
-outer.top        = [{ monitor."BenQ RD28*" = 34}, { monitor."Built-in*" = 6}, 70]
+outer.top        = [{ monitor."BenQ RD28*" = 38}, { monitor."Built-in*" = 6}, 70]
 
 # ============================================================================
 # WORKSPACE TO MONITOR ASSIGNMENT
@@ -164,6 +164,7 @@ i = ['exec-and-forget open -b com.apple.systempreferences', 'mode main']
 s = ['exec-and-forget open /Applications/Spotify.app', 'mode main']
 
 # Quick links
+f9  = ['exec-and-forget open https://festinafinance.atlassian.net/jira/software/c/projects/BEC/boards/180', 'mode main'] 
 f10 = ['exec-and-forget open https://github.com/festina-advisor/advisor/issues?q=is:open+is:pr+author:@me', 'mode main']
 f11 = ['exec-and-forget open https://github.com/notifications?query=is:unread', 'mode main']
 f12 = ['exec-and-forget open /System/Applications/Messages.app', 'mode main']
