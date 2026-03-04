@@ -1,14 +1,16 @@
 local sbar = require("sketchybar")
+local globals = require("globals")
+
 sbar.default({
-  padding_left = 2,
-  padding_right = 2,
+  padding_left = globals.PADDING,
+  padding_right = globals.PADDING,
   label = {
-    padding_left = 2,
-    padding_right = 2,
+    padding_left = globals.PADDING,
+    padding_right = globals.PADDING,
     font = { family = "SF Pro", style = "Regular" }
   },
   icon = {
-    padding_left = 2,
-    padding_right = 2
+    padding_left = globals.PADDING,
+    padding_right = globals.PADDING,
   }
 })

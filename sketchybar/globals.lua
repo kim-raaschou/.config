@@ -1,14 +1,16 @@
-local BAR_HEIGHT = 28
+local BAR_HEIGHT = 40
 local ITEM_HEIGHT = BAR_HEIGHT - 8
-local WS_FONT_SIZE = math.floor(BAR_HEIGHT * 0.5)
-local WS_WIDTH = BAR_HEIGHT - 8
-local APP_ICON_SCALE = ITEM_HEIGHT / 32
+local PADDING = math.max(2, math.floor(BAR_HEIGHT * 0.15))
 
 return {
   BAR_HEIGHT = BAR_HEIGHT,
   ITEM_HEIGHT = ITEM_HEIGHT,
   ITEM_OFFSET = -math.floor(ITEM_HEIGHT / 2) + 1,
-  WS_FONT_SIZE = WS_FONT_SIZE,
-  WS_WIDTH = WS_WIDTH,
-  APP_ICON_SCALE = APP_ICON_SCALE,
+  BAR_PADDING = math.max(2, math.floor(BAR_HEIGHT * 0.07)),
+  PADDING = PADDING,
+
+  -- workspace (shared: workspace.lua + mode.lua)
+  WS_FONT_SIZE = math.floor(BAR_HEIGHT * 0.5),
+  WS_WIDTH = BAR_HEIGHT - 12,
+  APP_ICON_SCALE = ITEM_HEIGHT / 32,
 }
