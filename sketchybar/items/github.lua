@@ -29,7 +29,7 @@ github:subscribe("routine", function()
         sbar.animate("sin", 30, function()
             github:set({
                 update_freq = 10,
-                icon = { color = (tonumber(count) or 0) > 0 and theme.accent or nil }
+                icon = { color = (tonumber(count) or 0) > 0 and theme.active_foreground or nil }
             })
         end)
     end)

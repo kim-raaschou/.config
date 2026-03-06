@@ -40,7 +40,7 @@ local function mode_symbol(mode)
 end
 
 local function mode_color(mode)
-  return mode == "main" and theme.mode_main or theme.mode_active
+  return mode == "main" and theme.inactive_foreground or theme.active_foreground
 end
 
 local mode_item = sbar.add("item", "space.mode.event_handler", {

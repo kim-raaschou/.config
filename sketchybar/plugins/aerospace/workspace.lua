@@ -25,11 +25,11 @@ local function update_ws(ws)
       string = ws.id,
       width = globals.WS_WIDTH,
       font = { style = "bold", size = globals.WS_FONT_SIZE },
-      color = ws.focused and theme.accent or theme.workspace_with_apps,
+      color = ws.focused and theme.active_foreground or theme.inactive_foreground,
       background = ws.focused and {
         drawing = true,
         height = 3,
-        color = theme.accent,
+        color = theme.active_foreground,
         y_offset = globals.ITEM_OFFSET,
         corner_radius = 3,
       } or { drawing = false },
@@ -37,7 +37,7 @@ local function update_ws(ws)
     background = ws.focused and {
       drawing = true,
       corner_radius = 3,
-      color = theme.workspace_bg,
+      color = theme.workspace_background,
       height = globals.ITEM_HEIGHT,
     } or { drawing = false },
   })
@@ -51,7 +51,7 @@ local function update_app(name, app, display, focused_wid)
     label = {
       drawing = app.count > 1,
       string = "􀕩",
-      color = theme.accent,
+      color = theme.active_foreground,
       y_offset = -8,
       padding_left = -6,
       font = { size = 6 },
@@ -61,7 +61,7 @@ local function update_app(name, app, display, focused_wid)
       border_width = 1,
       corner_radius = 7,
       string = BUNDLE_ID_OVERRIDES[app.bundle_id] or app.bundle_id,
-      border_color = app.window_id == focused_wid and theme.accent,
+      border_color = app.window_id == focused_wid and theme.active_foreground,
     }}},
   })
 end

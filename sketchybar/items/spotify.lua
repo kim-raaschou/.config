@@ -18,9 +18,9 @@ local progress = sbar.add("slider", "spotify.progress", SLIDER_WIDTH, {
   icon = { drawing = false },
   label = { drawing = false },
   slider = {
-    highlight_color = theme.accent,
+    highlight_color = theme.active_foreground,
     percentage = 0,
-    background = { height = 3, corner_radius = 2, color = theme.bar_bg },
+    background = { height = 3, corner_radius = 2 },
   },
 })
 

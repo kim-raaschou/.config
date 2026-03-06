@@ -1,8 +1,6 @@
 return {
-  accent = "0xFF7aa2f7",
-  bar_bg = "0xFF1a1b26",
-  workspace_bg = "0xFF24283b",
-  workspace_with_apps = "0xFF565f89",
-  workspace_empty = "0xFF545C7E",
-  border_inactive = "0xFF3b4261",
+  bar_background       = "0xFF1a1b26",
+  workspace_background = "0xFF24283b",
+  active_foreground    = "0xFF7aa2f7",
+  inactive_foreground  = "0xFF565f89",
 }
