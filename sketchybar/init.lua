@@ -1,4 +1,5 @@
 require("default")
 require("bar")
 require("plugins.aerospace")
+require("plugins.bar_resize")
 require("items")

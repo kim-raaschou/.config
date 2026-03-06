@@ -4,7 +4,7 @@ local globals = require("globals")
 
 sbar.bar({
   height = globals.BAR_HEIGHT,
-  color = theme.bar_bg,
-  padding_left = globals.BAR_PADDING,
+  color = theme.bar_background,
+  padding_left = 0,
   position = "top",
 })

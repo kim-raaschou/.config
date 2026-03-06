@@ -1,4 +1,4 @@
-local BAR_HEIGHT = 40
+local BAR_HEIGHT = 33
 local ITEM_HEIGHT = BAR_HEIGHT - 8
 local PADDING = math.max(2, math.floor(BAR_HEIGHT * 0.15))
 
@@ -6,7 +6,6 @@ return {
   BAR_HEIGHT = BAR_HEIGHT,
   ITEM_HEIGHT = ITEM_HEIGHT,
   ITEM_OFFSET = -math.floor(ITEM_HEIGHT / 2) + 1,
-  BAR_PADDING = math.max(2, math.floor(BAR_HEIGHT * 0.07)),
   PADDING = PADDING,
 
   -- workspace (shared: workspace.lua + mode.lua)
