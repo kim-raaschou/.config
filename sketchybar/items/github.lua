@@ -25,7 +25,7 @@ local github = sbar.add("item", "github", {
 
 github:subscribe("routine", function()
     sbar.exec(GITHUB_NOTIFICATIONS_COUNT, function(count)
-        logger("[GITHUB] Unread notifications count: " .. count)
+        logger("[GITHUB] Unread notifications count: " .. tostring(count))
         sbar.animate("sin", 30, function()
             github:set({
                 icon = { color = (tonumber(count) or 0) > 0 and theme.active_foreground or theme.inactive_foreground }
