@@ -9,7 +9,7 @@ local GITHUB_NOTIFICATIONS_COUNT = "GH_TOKEN=$(gh auth token --user krn_festina)
 
 local github = sbar.add("item", "github", {
     updates = "when_shown",
-    update_freq = 1,
+    update_freq = 10,
     position = "right",
     click_script = "open https://github.com/notifications",
     icon = {
@@ -28,8 +28,7 @@ github:subscribe("routine", function()
         logger("[GITHUB] Unread notifications count: " .. count)
         sbar.animate("sin", 30, function()
             github:set({
-                update_freq = 10,
-                icon = { color = (tonumber(count) or 0) > 0 and theme.active_foreground or nil }
+                icon = { color = (tonumber(count) or 0) > 0 and theme.active_foreground or theme.inactive_foreground }
             })
         end)
     end)

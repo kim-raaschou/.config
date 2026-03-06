@@ -139,5 +139,3 @@ sbar.add("item", "spotify.sub", { drawing = false }):subscribe("spotify_change",
 end)
 
 sbar.exec("mkdir -p '" .. CACHE_DIR .. "'")
-
-return { cover = cover, text = text, progress = progress }
