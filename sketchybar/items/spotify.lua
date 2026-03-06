@@ -4,8 +4,6 @@ local logger = require("util.logger")
 local globals = require("globals")
 
 local SLIDER_WIDTH = 150
-local FONT_SIZE = math.floor(globals.BAR_HEIGHT * 0.4)
-local MAX_CHARS = math.floor(SLIDER_WIDTH / (FONT_SIZE * 0.50)) -- overshoot: label.width clips visually
 local CACHE_DIR = os.getenv("HOME") .. "/.cache/sketchybar/spotify"
 local current_event = nil
 
@@ -34,8 +32,8 @@ local text = sbar.add("item", "spotify.text", {
     width = SLIDER_WIDTH,
     align = "left",
     y_offset = math.floor(globals.ITEM_HEIGHT * 0.2),
-    scroll_duration = 200,
-    font = { size = FONT_SIZE },
+    scroll_duration = 150,
+    font = { size = 13 }
   },
 })
 
@@ -84,6 +82,7 @@ local function fetch_cover(track_id, callback)
   sbar.exec("osascript -e '" .. script .. "'", function(url)
     url = (url or ""):match("^%s*(.-)%s*$")
     if url == "" then return end
+    -- Downscale cover art
     local cmd = string.format("curl -s '%s' -o '%s'", url:gsub("0000b273", "00004851"), path:gsub("'", "'\\''"))
     sbar.exec(cmd, function(_, code) if code == 0 then callback(path) end end)
   end)
@@ -131,7 +130,7 @@ sbar.add("item", "spotify.sub", { drawing = false }):subscribe("spotify_change",
 
   progress:set({ slider = { percentage = 0 } })
   local label = (event.track_name or "") .. " - " .. (event.artist or "")
-  text:set({ label = { string = label, max_chars = MAX_CHARS } })
+  text:set({ label = { string = label, max_chars = 20 } })
 
   fetch_cover(event.track_id, function(img)
     cover:set({ icon = { background = { image = { string = img } } } })
