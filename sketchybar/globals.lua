@@ -1,3 +1,5 @@
+-- Rewritten on disk by plugins/bar_resize.lua (bar_height_change event).
+-- Hotload restarts the config with the new value.
 local BAR_HEIGHT = 33
 local ITEM_HEIGHT = BAR_HEIGHT - 8
 local PADDING = math.max(2, math.floor(BAR_HEIGHT * 0.15))
