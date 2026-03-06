@@ -3,8 +3,7 @@ package.cpath = package.cpath .. ";/Users/" .. os.getenv("USER") .. "/.local/sha
 
 local sbar = require("sketchybar")
 
-require("theme").load("tokyodark")
-
+THEME_NAME = "tokyodark"
 
 sbar.begin_config()
 
