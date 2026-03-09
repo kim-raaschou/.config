@@ -34,10 +34,10 @@ on-focus-changed = ['exec-and-forget sketchybar --trigger aerospace_focus_change
 [gaps]
 inner.horizontal = [{ monitor."BenQ RD28*" = 16}, 12]
 inner.vertical   = [{ monitor."BenQ RD28*" = 16}, 12]
-outer.left       = [{ monitor."BenQ RD28*" = 12}, 8]
-outer.right      = [{ monitor."BenQ RD28*" = 12}, 8]
-outer.bottom     = [{ monitor."BenQ RD28*" = 12}, 8]
-outer.top        = [{ monitor."BenQ RD28*" = 46}, { monitor."Built-in*" = 8}, 60]
+outer.left       = [{ monitor."BenQ RD28*" = 12}, { monitor."Built-in*" = 8}, 4]
+outer.right      = [{ monitor."BenQ RD28*" = 12}, { monitor."Built-in*" = 8}, 4]
+outer.bottom     = [{ monitor."BenQ RD28*" = 12}, { monitor."Built-in*" = 8}, 4]
+outer.top        = [{ monitor."BenQ RD28*" = 12}, { monitor."Built-in*" = 8}, 4]
 
 # ============================================================================
 # WORKSPACE TO MONITOR ASSIGNMENT
@@ -179,6 +179,7 @@ esc   = ['mode main']
 # WINDOW DETECTION RULES
 # ============================================================================
 
+
 # SMS should float
 #[[on-window-detected]]
 #if.app-id = 'com.apple.MobileSMS'
@@ -205,3 +206,6 @@ run = ['layout floating']
 if.app-id = 'com.jetbrains.intellij'
 if.window-title-regex-substring = '^(Preferences|Settings|Project Structure)$'
 run = ['layout floating']
+
+[[on-window-detected]]
+run = ['move-node-to-workspace 1']
